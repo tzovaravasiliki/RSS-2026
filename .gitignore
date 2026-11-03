@@ -1,0 +1,13 @@
+workspace/
+__pycache__/
+*.pyc
+.env
+.env.*
+*.key
+
+offline_audit/
+.venv/
+venv/
+.pytest_cache/
+.DS_Store
+Thumbs.db

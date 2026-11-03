@@ -1,0 +1,1041 @@
+{
+  "name": "RSS2027 development and candidate designs",
+  "version": "1.0",
+  "review": {
+    "reviewers": [],
+    "independently_reviewed": false
+  },
+  "cases": [
+    {
+      "id": "D01",
+      "title": "Αλλαγή καροτσιού με άγνωστο έλεγχο",
+      "family": "object_binding",
+      "split": "development",
+      "initial_ttl": 100,
+      "public": {
+        "subject": "C2",
+        "now": 1,
+        "deadline": 12,
+        "aliases": {},
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 0.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1.0,
+          "H3": 1.0
+        }
+      },
+      "messages": [
+        {
+          "message_id": "m001",
+          "time": 0,
+          "speaker": "H2",
+          "text": "Ο έλεγχος του κιτ Α στο C1 ολοκληρώθηκε."
+        },
+        {
+          "message_id": "m002",
+          "time": 1,
+          "speaker": "H3",
+          "text": "Για τη μεταφορά επιλέχθηκε το κιτ Α στο C2. Δεν γνωρίζω αν ελέγχθηκε."
+        }
+      ],
+      "annotations": {
+        "evidence": [
+          {
+            "subject": "C1",
+            "value": true,
+            "source": "H2",
+            "timestamp": 0,
+            "ttl": 100
+          }
+        ],
+        "conflict": false
+      },
+      "private": {
+        "actual_verified": false,
+        "actual_access": [
+          "H2"
+        ]
+      }
+    },
+    {
+      "id": "D02",
+      "title": "Αλλαγή ονόματος χωρίς αλλαγή αντικειμένου",
+      "family": "object_binding",
+      "split": "development",
+      "initial_ttl": 100,
+      "public": {
+        "subject": "C1-east",
+        "now": 1,
+        "deadline": 12,
+        "aliases": {
+          "C1-east": "C1"
+        },
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 0.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1.0,
+          "H3": 1.0
+        }
+      },
+      "messages": [
+        {
+          "message_id": "m001",
+          "time": 0,
+          "speaker": "H2",
+          "text": "Ο έλεγχος του κιτ Α στο C1 ολοκληρώθηκε."
+        },
+        {
+          "message_id": "m002",
+          "time": 1,
+          "speaker": "H3",
+          "text": "Το ίδιο καρότσι C1 εμφανίζεται πλέον ως C1-east στην οθόνη. Δεν αλλάξαμε καρότσι ή κιτ."
+        }
+      ],
+      "annotations": {
+        "evidence": [
+          {
+            "subject": "C1",
+            "value": true,
+            "source": "H2",
+            "timestamp": 0,
+            "ttl": 100
+          }
+        ],
+        "conflict": false
+      },
+      "private": {
+        "actual_verified": true,
+        "actual_access": [
+          "H2"
+        ]
+      }
+    },
+    {
+      "id": "D03",
+      "title": "Επιβεβαίωση που έχει λήξει βάσει συνθετικού κανόνα",
+      "family": "freshness",
+      "split": "development",
+      "initial_ttl": 3,
+      "public": {
+        "subject": "C1",
+        "now": 5,
+        "deadline": 12,
+        "aliases": {},
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 0.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1.0,
+          "H3": 1.0
+        }
+      },
+      "messages": [
+        {
+          "message_id": "m001",
+          "time": 0,
+          "speaker": "H2",
+          "text": "Ο έλεγχος του κιτ Α ολοκληρώθηκε."
+        }
+      ],
+      "annotations": {
+        "evidence": [
+          {
+            "subject": "C1",
+            "value": true,
+            "source": "H2",
+            "timestamp": 0,
+            "ttl": 3
+          }
+        ],
+        "conflict": false
+      },
+      "private": {
+        "actual_verified": false,
+        "actual_access": [
+          "H2"
+        ]
+      }
+    },
+    {
+      "id": "D04",
+      "title": "Πρόσφατη επιβεβαίωση εντός συνθετικού ορίου",
+      "family": "freshness",
+      "split": "development",
+      "initial_ttl": 3,
+      "public": {
+        "subject": "C1",
+        "now": 5,
+        "deadline": 12,
+        "aliases": {},
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 0.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1.0,
+          "H3": 1.0
+        }
+      },
+      "messages": [
+        {
+          "message_id": "m001",
+          "time": 4,
+          "speaker": "H2",
+          "text": "Ο έλεγχος του κιτ Α ολοκληρώθηκε."
+        }
+      ],
+      "annotations": {
+        "evidence": [
+          {
+            "subject": "C1",
+            "value": true,
+            "source": "H2",
+            "timestamp": 4,
+            "ttl": 3
+          }
+        ],
+        "conflict": false
+      },
+      "private": {
+        "actual_verified": true,
+        "actual_access": [
+          "H2"
+        ]
+      }
+    },
+    {
+      "id": "D05",
+      "title": "Αντίφαση χωρίς στοχευμένη επίλυση",
+      "family": "conflict_resolution",
+      "split": "development",
+      "initial_ttl": 100,
+      "public": {
+        "subject": "C1",
+        "now": 1,
+        "deadline": 12,
+        "aliases": {},
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 0.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1.0,
+          "H3": 1.0
+        }
+      },
+      "messages": [
+        {
+          "message_id": "m001",
+          "time": 0,
+          "speaker": "H2",
+          "text": "Ο έλεγχος του κιτ Α ολοκληρώθηκε."
+        },
+        {
+          "message_id": "m002",
+          "time": 1,
+          "speaker": "H3",
+          "text": "Η τελευταία καταγραφή για το ίδιο κιτ δείχνει εκκρεμή έλεγχο."
+        }
+      ],
+      "annotations": {
+        "evidence": [
+          {
+            "subject": "C1",
+            "value": true,
+            "source": "H2",
+            "timestamp": 0,
+            "ttl": 100
+          },
+          {
+            "subject": "C1",
+            "value": false,
+            "source": "H3",
+            "timestamp": 1,
+            "ttl": 100
+          }
+        ],
+        "conflict": true
+      },
+      "private": {
+        "actual_verified": false,
+        "actual_access": [
+          "H2"
+        ]
+      }
+    },
+    {
+      "id": "D06",
+      "title": "Ρητή επίλυση παλιάς αντίφασης",
+      "family": "conflict_resolution",
+      "split": "development",
+      "initial_ttl": 100,
+      "public": {
+        "subject": "C1",
+        "now": 2,
+        "deadline": 12,
+        "aliases": {},
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 0.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1.0,
+          "H3": 1.0
+        }
+      },
+      "messages": [
+        {
+          "message_id": "m001",
+          "time": 0,
+          "speaker": "H2",
+          "text": "Ο έλεγχος του κιτ Α ολοκληρώθηκε."
+        },
+        {
+          "message_id": "m002",
+          "time": 1,
+          "speaker": "H3",
+          "text": "Η καταγραφή δείχνει εκκρεμή έλεγχο."
+        },
+        {
+          "message_id": "m003",
+          "time": 2,
+          "speaker": "H2",
+          "text": "Επανέλεγξα το ίδιο κιτ Α τώρα. Ο έλεγχος ολοκληρώθηκε και διόρθωσα την παλιά καταγραφή."
+        }
+      ],
+      "annotations": {
+        "evidence": [
+          {
+            "subject": "C1",
+            "value": true,
+            "source": "H2",
+            "timestamp": 2,
+            "ttl": 100
+          }
+        ],
+        "conflict": false
+      },
+      "private": {
+        "actual_verified": true,
+        "actual_access": [
+          "H2"
+        ]
+      }
+    },
+    {
+      "id": "D07",
+      "title": "Ο τυπικός υπεύθυνος δεν έχει την πληροφορία",
+      "family": "knowledge_uncertainty",
+      "split": "development",
+      "initial_ttl": 100,
+      "public": {
+        "subject": "C1",
+        "now": 0,
+        "deadline": 12,
+        "aliases": {},
+        "probability_knows": {
+          "H2": 0.0,
+          "H3": 1.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1.0,
+          "H3": 1.0
+        }
+      },
+      "messages": [
+        {
+          "message_id": "m001",
+          "time": 0,
+          "speaker": "H2",
+          "text": "Δεν συμμετείχα στον έλεγχο αυτού του κιτ. Το H3 τον πραγματοποίησε."
+        }
+      ],
+      "annotations": {
+        "evidence": [],
+        "conflict": false
+      },
+      "private": {
+        "actual_verified": true,
+        "actual_access": [
+          "H3"
+        ]
+      }
+    },
+    {
+      "id": "D08",
+      "title": "Ο τυπικός υπεύθυνος διαθέτει πρόσφατη γνώση",
+      "family": "knowledge_uncertainty",
+      "split": "development",
+      "initial_ttl": 100,
+      "public": {
+        "subject": "C1",
+        "now": 0,
+        "deadline": 12,
+        "aliases": {},
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 0.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1.0,
+          "H3": 1.0
+        }
+      },
+      "messages": [
+        {
+          "message_id": "m001",
+          "time": 0,
+          "speaker": "H2",
+          "text": "Έκανα προσωπικά τον έλεγχο του κιτ Α τώρα και ολοκληρώθηκε."
+        }
+      ],
+      "annotations": {
+        "evidence": [
+          {
+            "subject": "C1",
+            "value": true,
+            "source": "H2",
+            "timestamp": 0,
+            "ttl": 100
+          }
+        ],
+        "conflict": false
+      },
+      "private": {
+        "actual_verified": true,
+        "actual_access": [
+          "H2"
+        ]
+      }
+    },
+    {
+      "id": "D09",
+      "title": "Δύο ισοδύναμες πηγές με άνισο κόστος",
+      "family": "source_cost",
+      "split": "development",
+      "initial_ttl": 100,
+      "public": {
+        "subject": "C1",
+        "now": 0,
+        "deadline": 12,
+        "aliases": {},
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 1.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 5.0,
+          "H3": 1.0
+        }
+      },
+      "messages": [
+        {
+          "message_id": "m001",
+          "time": 0,
+          "speaker": "H1",
+          "text": "Το H2 και το H3 συμμετείχαν στον ίδιο έλεγχο του κιτ Α."
+        }
+      ],
+      "annotations": {
+        "evidence": [],
+        "conflict": false
+      },
+      "private": {
+        "actual_verified": true,
+        "actual_access": [
+          "H2",
+          "H3"
+        ]
+      }
+    },
+    {
+      "id": "D10",
+      "title": "Η φθηνή πηγή γνωρίζει άσχετο πεδίο",
+      "family": "source_cost",
+      "split": "development",
+      "initial_ttl": 100,
+      "public": {
+        "subject": "C1",
+        "now": 0,
+        "deadline": 12,
+        "aliases": {},
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 0.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 5.0,
+          "H3": 1.0
+        }
+      },
+      "messages": [
+        {
+          "message_id": "m001",
+          "time": 0,
+          "speaker": "H1",
+          "text": "Το H2 γνωρίζει τον έλεγχο του κιτ Α. Το H3 γνωρίζει μόνο τη διαδρομή."
+        }
+      ],
+      "annotations": {
+        "evidence": [],
+        "conflict": false
+      },
+      "private": {
+        "actual_verified": true,
+        "actual_access": [
+          "H2"
+        ]
+      }
+    },
+    {
+      "id": "D11",
+      "title": "Απαραίτητη επιβεβαίωση διαθέσιμη μετά την προθεσμία",
+      "family": "deadline",
+      "split": "development",
+      "initial_ttl": 100,
+      "public": {
+        "subject": "C1",
+        "now": 0,
+        "deadline": 2,
+        "aliases": {},
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 0.0
+        },
+        "available_at": {
+          "H2": 4,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1.0,
+          "H3": 1.0
+        }
+      },
+      "messages": [
+        {
+          "message_id": "m001",
+          "time": 0,
+          "speaker": "H1",
+          "text": "Η επιβεβαίωση ελέγχου εκκρεμεί. Η απόφαση πρέπει να ληφθεί έως το βήμα 2."
+        }
+      ],
+      "annotations": {
+        "evidence": [],
+        "conflict": false
+      },
+      "private": {
+        "actual_verified": false,
+        "actual_access": [
+          "H2"
+        ]
+      }
+    },
+    {
+      "id": "D12",
+      "title": "Απαραίτητη επιβεβαίωση διαθέσιμη εγκαίρως",
+      "family": "deadline",
+      "split": "development",
+      "initial_ttl": 100,
+      "public": {
+        "subject": "C1",
+        "now": 0,
+        "deadline": 5,
+        "aliases": {},
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 0.0
+        },
+        "available_at": {
+          "H2": 1,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1.0,
+          "H3": 1.0
+        }
+      },
+      "messages": [
+        {
+          "message_id": "m001",
+          "time": 0,
+          "speaker": "H1",
+          "text": "Η επιβεβαίωση ελέγχου εκκρεμεί. Η απόφαση πρέπει να ληφθεί έως το βήμα 5."
+        }
+      ],
+      "annotations": {
+        "evidence": [],
+        "conflict": false
+      },
+      "private": {
+        "actual_verified": true,
+        "actual_access": [
+          "H2"
+        ]
+      }
+    },
+    {
+      "id": "E01",
+      "title": "Διαφορετικό αντικείμενο και άγνοια",
+      "family": "object_binding",
+      "split": "candidate",
+      "initial_ttl": 100,
+      "public": {
+        "subject": "C3",
+        "now": 1,
+        "deadline": 10,
+        "aliases": {},
+        "probability_knows": {
+          "H2": 0.6,
+          "H3": 0.6
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 4,
+          "H3": 1
+        }
+      },
+      "messages": [
+        {
+          "message_id": "m001",
+          "speaker": "H2",
+          "time": 0,
+          "text": "Για το C2 ο έλεγχος ολοκληρώθηκε."
+        },
+        {
+          "message_id": "m002",
+          "speaker": "H3",
+          "time": 1,
+          "text": "Τώρα ζητείται το C3. Δεν γνωρίζω την κατάστασή του."
+        }
+      ],
+      "annotations": {
+        "evidence": [
+          {
+            "subject": "C2",
+            "value": true,
+            "source": "H2",
+            "timestamp": 0,
+            "ttl": 100
+          }
+        ],
+        "conflict": false
+      },
+      "private": {
+        "actual_verified": false,
+        "actual_access": [
+          "H3"
+        ]
+      }
+    },
+    {
+      "id": "E02",
+      "title": "Υπόθεση και μελλοντική υπόσχεση",
+      "family": "conditional_language",
+      "split": "candidate",
+      "initial_ttl": 100,
+      "public": {
+        "subject": "C1",
+        "now": 0,
+        "deadline": 10,
+        "aliases": {},
+        "probability_knows": {
+          "H2": 0.7,
+          "H3": 0.4
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1,
+          "H3": 1
+        }
+      },
+      "messages": [
+        {
+          "message_id": "m001",
+          "speaker": "H2",
+          "time": 0,
+          "text": "Αν ολοκληρωθεί ο έλεγχος στο C1, θα στείλω την επιβεβαίωση. Προς το παρόν δεν γνωρίζω αν ολοκληρώθηκε."
+        }
+      ],
+      "annotations": {
+        "evidence": [],
+        "conflict": false
+      },
+      "private": {
+        "actual_verified": false,
+        "actual_access": [
+          "H2"
+        ]
+      }
+    },
+    {
+      "id": "E03",
+      "title": "Λανθασμένο prior γνώσης",
+      "family": "incorrect_prior",
+      "split": "candidate",
+      "initial_ttl": 100,
+      "public": {
+        "subject": "C1",
+        "now": 0,
+        "deadline": 10,
+        "aliases": {},
+        "probability_knows": {
+          "H2": 0.9,
+          "H3": 0.3
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1,
+          "H3": 3
+        }
+      },
+      "messages": [
+        {
+          "message_id": "m001",
+          "speaker": "H1",
+          "time": 0,
+          "text": "Το C1 περιμένει απόφαση μεταφοράς. Δεν έχουμε ακόμη επιβεβαίωση."
+        }
+      ],
+      "annotations": {
+        "evidence": [],
+        "conflict": false
+      },
+      "private": {
+        "actual_verified": true,
+        "actual_access": [
+          "H3"
+        ]
+      }
+    },
+    {
+      "id": "E04",
+      "title": "Ακριβώς στο συνθετικό όριο ισχύος",
+      "family": "freshness_boundary",
+      "split": "candidate",
+      "initial_ttl": 3,
+      "public": {
+        "subject": "C1",
+        "now": 3,
+        "deadline": 10,
+        "aliases": {},
+        "probability_knows": {
+          "H2": 0.7,
+          "H3": 0.4
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1,
+          "H3": 1
+        }
+      },
+      "messages": [
+        {
+          "message_id": "m001",
+          "speaker": "H2",
+          "time": 0,
+          "text": "Ο έλεγχος του C1 ολοκληρώθηκε."
+        }
+      ],
+      "annotations": {
+        "evidence": [
+          {
+            "subject": "C1",
+            "value": true,
+            "source": "H2",
+            "timestamp": 0,
+            "ttl": 3
+          }
+        ],
+        "conflict": false
+      },
+      "private": {
+        "actual_verified": true,
+        "actual_access": [
+          "H2"
+        ]
+      }
+    },
+    {
+      "id": "E05",
+      "title": "Ακριβή διαθέσιμη πηγή πριν την προθεσμία",
+      "family": "deadline_cost_tradeoff",
+      "split": "candidate",
+      "initial_ttl": 100,
+      "public": {
+        "subject": "C1",
+        "now": 0,
+        "deadline": 2,
+        "aliases": {},
+        "probability_knows": {
+          "H2": 0.8,
+          "H3": 0.8
+        },
+        "available_at": {
+          "H2": 3,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1,
+          "H3": 5
+        }
+      },
+      "messages": [
+        {
+          "message_id": "m001",
+          "speaker": "H1",
+          "time": 0,
+          "text": "Δεν έχουμε την επιβεβαίωση για το C1. Χρειαζόμαστε απόφαση έως το βήμα 2."
+        }
+      ],
+      "annotations": {
+        "evidence": [],
+        "conflict": false
+      },
+      "private": {
+        "actual_verified": true,
+        "actual_access": [
+          "H2",
+          "H3"
+        ]
+      }
+    },
+    {
+      "id": "E06",
+      "title": "Διόρθωση προηγούμενης θετικής αναφοράς",
+      "family": "resolved_negative",
+      "split": "candidate",
+      "initial_ttl": 100,
+      "public": {
+        "subject": "C1",
+        "now": 1,
+        "deadline": 10,
+        "aliases": {},
+        "probability_knows": {
+          "H2": 0.7,
+          "H3": 0.4
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1,
+          "H3": 1
+        }
+      },
+      "messages": [
+        {
+          "message_id": "m001",
+          "speaker": "H2",
+          "time": 0,
+          "text": "Ο έλεγχος του C1 ολοκληρώθηκε."
+        },
+        {
+          "message_id": "m002",
+          "speaker": "H2",
+          "time": 1,
+          "text": "Διορθώνω την προηγούμενη αναφορά: επανέλεγξα το C1 και ο έλεγχος δεν έχει ολοκληρωθεί."
+        }
+      ],
+      "annotations": {
+        "evidence": [
+          {
+            "subject": "C1",
+            "value": false,
+            "source": "H2",
+            "timestamp": 1,
+            "ttl": 100
+          }
+        ],
+        "conflict": false
+      },
+      "private": {
+        "actual_verified": false,
+        "actual_access": [
+          "H2"
+        ]
+      }
+    },
+    {
+      "id": "E07",
+      "title": "Ψευδώνυμο και άσχετη αρνητική αναφορά",
+      "family": "multi_object_alias",
+      "split": "candidate",
+      "initial_ttl": 100,
+      "public": {
+        "subject": "C4-room",
+        "now": 2,
+        "deadline": 10,
+        "aliases": {
+          "C4-room": "C4"
+        },
+        "probability_knows": {
+          "H2": 0.7,
+          "H3": 0.4
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1,
+          "H3": 1
+        }
+      },
+      "messages": [
+        {
+          "message_id": "m001",
+          "speaker": "H3",
+          "time": 0,
+          "text": "Ο έλεγχος του C2 δεν έχει ολοκληρωθεί."
+        },
+        {
+          "message_id": "m002",
+          "speaker": "H2",
+          "time": 1,
+          "text": "Ο έλεγχος του C4 ολοκληρώθηκε."
+        },
+        {
+          "message_id": "m003",
+          "speaker": "H1",
+          "time": 2,
+          "text": "Το C4-room είναι το ίδιο φυσικό καρότσι με το C4."
+        }
+      ],
+      "annotations": {
+        "evidence": [
+          {
+            "subject": "C2",
+            "value": false,
+            "source": "H3",
+            "timestamp": 0,
+            "ttl": 100
+          },
+          {
+            "subject": "C4",
+            "value": true,
+            "source": "H2",
+            "timestamp": 1,
+            "ttl": 100
+          }
+        ],
+        "conflict": false
+      },
+      "private": {
+        "actual_verified": true,
+        "actual_access": [
+          "H2"
+        ]
+      }
+    },
+    {
+      "id": "E08",
+      "title": "Ληγμένη αναφορά και νέα διαθέσιμη πηγή",
+      "family": "freshness_source_change",
+      "split": "candidate",
+      "initial_ttl": 2,
+      "public": {
+        "subject": "C1",
+        "now": 4,
+        "deadline": 10,
+        "aliases": {},
+        "probability_knows": {
+          "H2": 0.7,
+          "H3": 0.7
+        },
+        "available_at": {
+          "H2": 6,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 3,
+          "H3": 1
+        }
+      },
+      "messages": [
+        {
+          "message_id": "m001",
+          "speaker": "H2",
+          "time": 0,
+          "text": "Ο έλεγχος του C1 ολοκληρώθηκε."
+        }
+      ],
+      "annotations": {
+        "evidence": [
+          {
+            "subject": "C1",
+            "value": true,
+            "source": "H2",
+            "timestamp": 0,
+            "ttl": 2
+          }
+        ],
+        "conflict": false
+      },
+      "private": {
+        "actual_verified": true,
+        "actual_access": [
+          "H2",
+          "H3"
+        ]
+      }
+    }
+  ]
+}

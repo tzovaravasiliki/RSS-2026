@@ -1,0 +1,36 @@
+{
+  "mode": "offline",
+  "purpose": "development",
+  "case_ids": [
+    "D01",
+    "D02",
+    "D03",
+    "D04",
+    "D05",
+    "D06",
+    "D07",
+    "D08",
+    "D09",
+    "D10",
+    "D11",
+    "D12"
+  ],
+  "policies": [
+    "cost_aware",
+    "always_reverify",
+    "cost_blind",
+    "llm"
+  ],
+  "models": [
+    {
+      "provider": "openai",
+      "model": "gpt-5-mini-2025-08-07"
+    }
+  ],
+  "repeats": 1,
+  "max_steps": 8,
+  "seed": 2027,
+  "question_value": 30,
+  "max_output_tokens": 3000,
+  "evidence_mode": "explicit_support"
+}

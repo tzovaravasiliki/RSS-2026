@@ -1,0 +1,1328 @@
+{
+  "scope": "Development regressions from 12 previously recorded model turns; not independent evaluation. No new model calls.",
+  "source_session_id": "d64dd3c32bdd4c77a1351ff65afbb875",
+  "source_fingerprint": "bbd8020fce2a25b3b6beace2809be1a592287c20ab91fe7adc9f53d6ca64c8a8",
+  "turns": [
+    {
+      "case": "D09",
+      "policy": "always_reverify",
+      "turn": 1,
+      "public_input": {
+        "task": {
+          "subject": "C1",
+          "default_subject": "C1",
+          "now": 0,
+          "deadline": 12,
+          "aliases": {},
+          "known_subjects": [
+            "C1"
+          ],
+          "sources": [
+            "H2",
+            "H3"
+          ],
+          "probability_knows": {
+            "H2": 1.0,
+            "H3": 1.0
+          },
+          "available_at": {
+            "H2": 0,
+            "H3": 0
+          },
+          "query_cost": {
+            "H2": 5.0,
+            "H3": 1.0
+          },
+          "attempted": [],
+          "received_answer": false
+        },
+        "messages": [
+          {
+            "message_id": "m001",
+            "time": 0,
+            "speaker": "H1",
+            "text": "Το H2 και το H3 συμμετείχαν στον ίδιο έλεγχο του κιτ Α.",
+            "valid_for": 100
+          }
+        ]
+      },
+      "raw_output": {
+        "evidence": [],
+        "conflict": false,
+        "decision": {
+          "action": "ask",
+          "recipient": "H3"
+        }
+      },
+      "expected_view_for_offline_scoring": {
+        "case_id": "D09",
+        "subject": "C1",
+        "now": 0,
+        "deadline": 12,
+        "evidence": [],
+        "aliases": {},
+        "conflict": false,
+        "sources": [
+          "H2",
+          "H3"
+        ],
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 1.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 5.0,
+          "H3": 1.0
+        },
+        "attempted": [],
+        "received_answer": false
+      },
+      "original_action": {
+        "action": "ask",
+        "recipient": "H3"
+      },
+      "raw_checks": {
+        "evidence_exact": true,
+        "conflict_correct": true,
+        "current_status_correct": true
+      }
+    },
+    {
+      "case": "D09",
+      "policy": "always_reverify",
+      "turn": 2,
+      "public_input": {
+        "task": {
+          "subject": "C1",
+          "default_subject": "C1",
+          "now": 1,
+          "deadline": 12,
+          "aliases": {},
+          "known_subjects": [
+            "C1"
+          ],
+          "sources": [
+            "H2",
+            "H3"
+          ],
+          "probability_knows": {
+            "H2": 1.0,
+            "H3": 1.0
+          },
+          "available_at": {
+            "H2": 0,
+            "H3": 0
+          },
+          "query_cost": {
+            "H2": 5.0,
+            "H3": 1.0
+          },
+          "attempted": [
+            "H3"
+          ],
+          "received_answer": true
+        },
+        "messages": [
+          {
+            "message_id": "m001",
+            "time": 0,
+            "speaker": "H1",
+            "text": "Το H2 και το H3 συμμετείχαν στον ίδιο έλεγχο του κιτ Α.",
+            "valid_for": 100
+          },
+          {
+            "message_id": "m002",
+            "speaker": "ROBOT",
+            "time": 0,
+            "valid_for": 0,
+            "text": "Ποια είναι η τρέχουσα κατάσταση ελέγχου για το C1;"
+          },
+          {
+            "message_id": "m003",
+            "speaker": "H3",
+            "time": 1,
+            "valid_for": 100,
+            "text": "Επανέλεγξα το C1 τώρα. Ο έλεγχος ολοκληρώθηκε. Αυτή η ενημέρωση αντικαθιστά τις προηγούμενες αναφορές για το ίδιο καρότσι."
+          }
+        ]
+      },
+      "raw_output": {
+        "evidence": [
+          {
+            "message_id": "m003",
+            "subject": "C1",
+            "value": true
+          }
+        ],
+        "conflict": false,
+        "decision": {
+          "action": "dispatch",
+          "recipient": null
+        }
+      },
+      "expected_view_for_offline_scoring": {
+        "case_id": "D09",
+        "subject": "C1",
+        "now": 1,
+        "deadline": 12,
+        "evidence": [
+          {
+            "subject": "C1",
+            "value": true,
+            "source": "H3",
+            "timestamp": 1,
+            "ttl": 100
+          }
+        ],
+        "aliases": {},
+        "conflict": false,
+        "sources": [
+          "H2",
+          "H3"
+        ],
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 1.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 5.0,
+          "H3": 1.0
+        },
+        "attempted": [
+          "H3"
+        ],
+        "received_answer": true
+      },
+      "original_action": {
+        "action": "dispatch",
+        "recipient": null
+      },
+      "raw_checks": {
+        "evidence_exact": true,
+        "conflict_correct": true,
+        "current_status_correct": true
+      }
+    },
+    {
+      "case": "D09",
+      "policy": "cost_blind",
+      "turn": 1,
+      "public_input": {
+        "task": {
+          "subject": "C1",
+          "default_subject": "C1",
+          "now": 0,
+          "deadline": 12,
+          "aliases": {},
+          "known_subjects": [
+            "C1"
+          ],
+          "sources": [
+            "H2",
+            "H3"
+          ],
+          "probability_knows": {
+            "H2": 1.0,
+            "H3": 1.0
+          },
+          "available_at": {
+            "H2": 0,
+            "H3": 0
+          },
+          "query_cost": {
+            "H2": 5.0,
+            "H3": 1.0
+          },
+          "attempted": [],
+          "received_answer": false
+        },
+        "messages": [
+          {
+            "message_id": "m001",
+            "time": 0,
+            "speaker": "H1",
+            "text": "Το H2 και το H3 συμμετείχαν στον ίδιο έλεγχο του κιτ Α.",
+            "valid_for": 100
+          }
+        ]
+      },
+      "raw_output": {
+        "evidence": [
+          {
+            "message_id": "m001",
+            "subject": "C1",
+            "value": false
+          }
+        ],
+        "conflict": false,
+        "decision": {
+          "action": "ask",
+          "recipient": "H3"
+        }
+      },
+      "expected_view_for_offline_scoring": {
+        "case_id": "D09",
+        "subject": "C1",
+        "now": 0,
+        "deadline": 12,
+        "evidence": [],
+        "aliases": {},
+        "conflict": false,
+        "sources": [
+          "H2",
+          "H3"
+        ],
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 1.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 5.0,
+          "H3": 1.0
+        },
+        "attempted": [],
+        "received_answer": false
+      },
+      "original_action": {
+        "action": "escalate",
+        "recipient": null
+      },
+      "raw_checks": {
+        "evidence_exact": false,
+        "conflict_correct": true,
+        "current_status_correct": false
+      }
+    },
+    {
+      "case": "D09",
+      "policy": "cost_aware",
+      "turn": 1,
+      "public_input": {
+        "task": {
+          "subject": "C1",
+          "default_subject": "C1",
+          "now": 0,
+          "deadline": 12,
+          "aliases": {},
+          "known_subjects": [
+            "C1"
+          ],
+          "sources": [
+            "H2",
+            "H3"
+          ],
+          "probability_knows": {
+            "H2": 1.0,
+            "H3": 1.0
+          },
+          "available_at": {
+            "H2": 0,
+            "H3": 0
+          },
+          "query_cost": {
+            "H2": 5.0,
+            "H3": 1.0
+          },
+          "attempted": [],
+          "received_answer": false
+        },
+        "messages": [
+          {
+            "message_id": "m001",
+            "time": 0,
+            "speaker": "H1",
+            "text": "Το H2 και το H3 συμμετείχαν στον ίδιο έλεγχο του κιτ Α.",
+            "valid_for": 100
+          }
+        ]
+      },
+      "raw_output": {
+        "evidence": [],
+        "conflict": false,
+        "decision": {
+          "action": "ask",
+          "recipient": "H3"
+        }
+      },
+      "expected_view_for_offline_scoring": {
+        "case_id": "D09",
+        "subject": "C1",
+        "now": 0,
+        "deadline": 12,
+        "evidence": [],
+        "aliases": {},
+        "conflict": false,
+        "sources": [
+          "H2",
+          "H3"
+        ],
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 1.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 5.0,
+          "H3": 1.0
+        },
+        "attempted": [],
+        "received_answer": false
+      },
+      "original_action": {
+        "action": "ask",
+        "recipient": "H3"
+      },
+      "raw_checks": {
+        "evidence_exact": true,
+        "conflict_correct": true,
+        "current_status_correct": true
+      }
+    },
+    {
+      "case": "D09",
+      "policy": "cost_aware",
+      "turn": 2,
+      "public_input": {
+        "task": {
+          "subject": "C1",
+          "default_subject": "C1",
+          "now": 1,
+          "deadline": 12,
+          "aliases": {},
+          "known_subjects": [
+            "C1"
+          ],
+          "sources": [
+            "H2",
+            "H3"
+          ],
+          "probability_knows": {
+            "H2": 1.0,
+            "H3": 1.0
+          },
+          "available_at": {
+            "H2": 0,
+            "H3": 0
+          },
+          "query_cost": {
+            "H2": 5.0,
+            "H3": 1.0
+          },
+          "attempted": [
+            "H3"
+          ],
+          "received_answer": true
+        },
+        "messages": [
+          {
+            "message_id": "m001",
+            "time": 0,
+            "speaker": "H1",
+            "text": "Το H2 και το H3 συμμετείχαν στον ίδιο έλεγχο του κιτ Α.",
+            "valid_for": 100
+          },
+          {
+            "message_id": "m002",
+            "speaker": "ROBOT",
+            "time": 0,
+            "valid_for": 0,
+            "text": "Ποια είναι η τρέχουσα κατάσταση ελέγχου για το C1;"
+          },
+          {
+            "message_id": "m003",
+            "speaker": "H3",
+            "time": 1,
+            "valid_for": 100,
+            "text": "Επανέλεγξα το C1 τώρα. Ο έλεγχος ολοκληρώθηκε. Αυτή η ενημέρωση αντικαθιστά τις προηγούμενες αναφορές για το ίδιο καρότσι."
+          }
+        ]
+      },
+      "raw_output": {
+        "evidence": [
+          {
+            "message_id": "m003",
+            "subject": "C1",
+            "value": true
+          }
+        ],
+        "conflict": false,
+        "decision": {
+          "action": "dispatch",
+          "recipient": null
+        }
+      },
+      "expected_view_for_offline_scoring": {
+        "case_id": "D09",
+        "subject": "C1",
+        "now": 1,
+        "deadline": 12,
+        "evidence": [
+          {
+            "subject": "C1",
+            "value": true,
+            "source": "H3",
+            "timestamp": 1,
+            "ttl": 100
+          }
+        ],
+        "aliases": {},
+        "conflict": false,
+        "sources": [
+          "H2",
+          "H3"
+        ],
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 1.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 5.0,
+          "H3": 1.0
+        },
+        "attempted": [
+          "H3"
+        ],
+        "received_answer": true
+      },
+      "original_action": {
+        "action": "dispatch",
+        "recipient": null
+      },
+      "raw_checks": {
+        "evidence_exact": true,
+        "conflict_correct": true,
+        "current_status_correct": true
+      }
+    },
+    {
+      "case": "D09",
+      "policy": "llm",
+      "turn": 1,
+      "public_input": {
+        "task": {
+          "subject": "C1",
+          "default_subject": "C1",
+          "now": 0,
+          "deadline": 12,
+          "aliases": {},
+          "known_subjects": [
+            "C1"
+          ],
+          "sources": [
+            "H2",
+            "H3"
+          ],
+          "probability_knows": {
+            "H2": 1.0,
+            "H3": 1.0
+          },
+          "available_at": {
+            "H2": 0,
+            "H3": 0
+          },
+          "query_cost": {
+            "H2": 5.0,
+            "H3": 1.0
+          },
+          "attempted": [],
+          "received_answer": false
+        },
+        "messages": [
+          {
+            "message_id": "m001",
+            "time": 0,
+            "speaker": "H1",
+            "text": "Το H2 και το H3 συμμετείχαν στον ίδιο έλεγχο του κιτ Α.",
+            "valid_for": 100
+          }
+        ]
+      },
+      "raw_output": {
+        "evidence": [],
+        "conflict": false,
+        "decision": {
+          "action": "ask",
+          "recipient": "H3"
+        }
+      },
+      "expected_view_for_offline_scoring": {
+        "case_id": "D09",
+        "subject": "C1",
+        "now": 0,
+        "deadline": 12,
+        "evidence": [],
+        "aliases": {},
+        "conflict": false,
+        "sources": [
+          "H2",
+          "H3"
+        ],
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 1.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 5.0,
+          "H3": 1.0
+        },
+        "attempted": [],
+        "received_answer": false
+      },
+      "original_action": {
+        "action": "ask",
+        "recipient": "H3"
+      },
+      "raw_checks": {
+        "evidence_exact": true,
+        "conflict_correct": true,
+        "current_status_correct": true
+      }
+    },
+    {
+      "case": "D09",
+      "policy": "llm",
+      "turn": 2,
+      "public_input": {
+        "task": {
+          "subject": "C1",
+          "default_subject": "C1",
+          "now": 1,
+          "deadline": 12,
+          "aliases": {},
+          "known_subjects": [
+            "C1"
+          ],
+          "sources": [
+            "H2",
+            "H3"
+          ],
+          "probability_knows": {
+            "H2": 1.0,
+            "H3": 1.0
+          },
+          "available_at": {
+            "H2": 0,
+            "H3": 0
+          },
+          "query_cost": {
+            "H2": 5.0,
+            "H3": 1.0
+          },
+          "attempted": [
+            "H3"
+          ],
+          "received_answer": true
+        },
+        "messages": [
+          {
+            "message_id": "m001",
+            "time": 0,
+            "speaker": "H1",
+            "text": "Το H2 και το H3 συμμετείχαν στον ίδιο έλεγχο του κιτ Α.",
+            "valid_for": 100
+          },
+          {
+            "message_id": "m002",
+            "speaker": "ROBOT",
+            "time": 0,
+            "valid_for": 0,
+            "text": "Ποια είναι η τρέχουσα κατάσταση ελέγχου για το C1;"
+          },
+          {
+            "message_id": "m003",
+            "speaker": "H3",
+            "time": 1,
+            "valid_for": 100,
+            "text": "Επανέλεγξα το C1 τώρα. Ο έλεγχος ολοκληρώθηκε. Αυτή η ενημέρωση αντικαθιστά τις προηγούμενες αναφορές για το ίδιο καρότσι."
+          }
+        ]
+      },
+      "raw_output": {
+        "evidence": [
+          {
+            "message_id": "m003",
+            "subject": "C1",
+            "value": true
+          }
+        ],
+        "conflict": false,
+        "decision": {
+          "action": "dispatch",
+          "recipient": null
+        }
+      },
+      "expected_view_for_offline_scoring": {
+        "case_id": "D09",
+        "subject": "C1",
+        "now": 1,
+        "deadline": 12,
+        "evidence": [
+          {
+            "subject": "C1",
+            "value": true,
+            "source": "H3",
+            "timestamp": 1,
+            "ttl": 100
+          }
+        ],
+        "aliases": {},
+        "conflict": false,
+        "sources": [
+          "H2",
+          "H3"
+        ],
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 1.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 5.0,
+          "H3": 1.0
+        },
+        "attempted": [
+          "H3"
+        ],
+        "received_answer": true
+      },
+      "original_action": {
+        "action": "dispatch",
+        "recipient": null
+      },
+      "raw_checks": {
+        "evidence_exact": true,
+        "conflict_correct": true,
+        "current_status_correct": true
+      }
+    },
+    {
+      "case": "D02",
+      "policy": "llm",
+      "turn": 1,
+      "public_input": {
+        "task": {
+          "subject": "C1-east",
+          "default_subject": "C1",
+          "now": 1,
+          "deadline": 12,
+          "aliases": {
+            "C1-east": "C1"
+          },
+          "known_subjects": [
+            "C1",
+            "C1-east"
+          ],
+          "sources": [
+            "H2",
+            "H3"
+          ],
+          "probability_knows": {
+            "H2": 1.0,
+            "H3": 0.0
+          },
+          "available_at": {
+            "H2": 0,
+            "H3": 0
+          },
+          "query_cost": {
+            "H2": 1.0,
+            "H3": 1.0
+          },
+          "attempted": [],
+          "received_answer": false
+        },
+        "messages": [
+          {
+            "message_id": "m001",
+            "time": 0,
+            "speaker": "H2",
+            "text": "Ο έλεγχος του κιτ Α στο C1 ολοκληρώθηκε.",
+            "valid_for": 100
+          },
+          {
+            "message_id": "m002",
+            "time": 1,
+            "speaker": "H3",
+            "text": "Το ίδιο καρότσι C1 εμφανίζεται πλέον ως C1-east στην οθόνη. Δεν αλλάξαμε καρότσι ή κιτ.",
+            "valid_for": 100
+          }
+        ]
+      },
+      "raw_output": {
+        "evidence": [
+          {
+            "message_id": "m001",
+            "subject": "C1",
+            "value": true
+          }
+        ],
+        "conflict": false,
+        "decision": {
+          "action": "dispatch",
+          "recipient": null
+        }
+      },
+      "expected_view_for_offline_scoring": {
+        "case_id": "D02",
+        "subject": "C1-east",
+        "now": 1,
+        "deadline": 12,
+        "evidence": [
+          {
+            "subject": "C1",
+            "value": true,
+            "source": "H2",
+            "timestamp": 0,
+            "ttl": 100
+          }
+        ],
+        "aliases": {
+          "C1-east": "C1"
+        },
+        "conflict": false,
+        "sources": [
+          "H2",
+          "H3"
+        ],
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 0.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1.0,
+          "H3": 1.0
+        },
+        "attempted": [],
+        "received_answer": false
+      },
+      "original_action": {
+        "action": "dispatch",
+        "recipient": null
+      },
+      "raw_checks": {
+        "evidence_exact": true,
+        "conflict_correct": true,
+        "current_status_correct": true
+      }
+    },
+    {
+      "case": "D02",
+      "policy": "cost_aware",
+      "turn": 1,
+      "public_input": {
+        "task": {
+          "subject": "C1-east",
+          "default_subject": "C1",
+          "now": 1,
+          "deadline": 12,
+          "aliases": {
+            "C1-east": "C1"
+          },
+          "known_subjects": [
+            "C1",
+            "C1-east"
+          ],
+          "sources": [
+            "H2",
+            "H3"
+          ],
+          "probability_knows": {
+            "H2": 1.0,
+            "H3": 0.0
+          },
+          "available_at": {
+            "H2": 0,
+            "H3": 0
+          },
+          "query_cost": {
+            "H2": 1.0,
+            "H3": 1.0
+          },
+          "attempted": [],
+          "received_answer": false
+        },
+        "messages": [
+          {
+            "message_id": "m001",
+            "time": 0,
+            "speaker": "H2",
+            "text": "Ο έλεγχος του κιτ Α στο C1 ολοκληρώθηκε.",
+            "valid_for": 100
+          },
+          {
+            "message_id": "m002",
+            "time": 1,
+            "speaker": "H3",
+            "text": "Το ίδιο καρότσι C1 εμφανίζεται πλέον ως C1-east στην οθόνη. Δεν αλλάξαμε καρότσι ή κιτ.",
+            "valid_for": 100
+          }
+        ]
+      },
+      "raw_output": {
+        "evidence": [
+          {
+            "message_id": "m001",
+            "subject": "C1",
+            "value": true
+          },
+          {
+            "message_id": "m002",
+            "subject": "C1-east",
+            "value": true
+          }
+        ],
+        "conflict": false,
+        "decision": {
+          "action": "dispatch",
+          "recipient": null
+        }
+      },
+      "expected_view_for_offline_scoring": {
+        "case_id": "D02",
+        "subject": "C1-east",
+        "now": 1,
+        "deadline": 12,
+        "evidence": [
+          {
+            "subject": "C1",
+            "value": true,
+            "source": "H2",
+            "timestamp": 0,
+            "ttl": 100
+          }
+        ],
+        "aliases": {
+          "C1-east": "C1"
+        },
+        "conflict": false,
+        "sources": [
+          "H2",
+          "H3"
+        ],
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 0.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1.0,
+          "H3": 1.0
+        },
+        "attempted": [],
+        "received_answer": false
+      },
+      "original_action": {
+        "action": "dispatch",
+        "recipient": null
+      },
+      "raw_checks": {
+        "evidence_exact": false,
+        "conflict_correct": true,
+        "current_status_correct": true
+      }
+    },
+    {
+      "case": "D02",
+      "policy": "always_reverify",
+      "turn": 1,
+      "public_input": {
+        "task": {
+          "subject": "C1-east",
+          "default_subject": "C1",
+          "now": 1,
+          "deadline": 12,
+          "aliases": {
+            "C1-east": "C1"
+          },
+          "known_subjects": [
+            "C1",
+            "C1-east"
+          ],
+          "sources": [
+            "H2",
+            "H3"
+          ],
+          "probability_knows": {
+            "H2": 1.0,
+            "H3": 0.0
+          },
+          "available_at": {
+            "H2": 0,
+            "H3": 0
+          },
+          "query_cost": {
+            "H2": 1.0,
+            "H3": 1.0
+          },
+          "attempted": [],
+          "received_answer": false
+        },
+        "messages": [
+          {
+            "message_id": "m001",
+            "time": 0,
+            "speaker": "H2",
+            "text": "Ο έλεγχος του κιτ Α στο C1 ολοκληρώθηκε.",
+            "valid_for": 100
+          },
+          {
+            "message_id": "m002",
+            "time": 1,
+            "speaker": "H3",
+            "text": "Το ίδιο καρότσι C1 εμφανίζεται πλέον ως C1-east στην οθόνη. Δεν αλλάξαμε καρότσι ή κιτ.",
+            "valid_for": 100
+          }
+        ]
+      },
+      "raw_output": {
+        "evidence": [
+          {
+            "message_id": "m001",
+            "subject": "C1",
+            "value": true
+          },
+          {
+            "message_id": "m002",
+            "subject": "C1-east",
+            "value": true
+          }
+        ],
+        "conflict": false,
+        "decision": {
+          "action": "dispatch",
+          "recipient": null
+        }
+      },
+      "expected_view_for_offline_scoring": {
+        "case_id": "D02",
+        "subject": "C1-east",
+        "now": 1,
+        "deadline": 12,
+        "evidence": [
+          {
+            "subject": "C1",
+            "value": true,
+            "source": "H2",
+            "timestamp": 0,
+            "ttl": 100
+          }
+        ],
+        "aliases": {
+          "C1-east": "C1"
+        },
+        "conflict": false,
+        "sources": [
+          "H2",
+          "H3"
+        ],
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 0.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1.0,
+          "H3": 1.0
+        },
+        "attempted": [],
+        "received_answer": false
+      },
+      "original_action": {
+        "action": "ask",
+        "recipient": "H2"
+      },
+      "raw_checks": {
+        "evidence_exact": false,
+        "conflict_correct": true,
+        "current_status_correct": true
+      }
+    },
+    {
+      "case": "D02",
+      "policy": "always_reverify",
+      "turn": 2,
+      "public_input": {
+        "task": {
+          "subject": "C1-east",
+          "default_subject": "C1",
+          "now": 2,
+          "deadline": 12,
+          "aliases": {
+            "C1-east": "C1"
+          },
+          "known_subjects": [
+            "C1",
+            "C1-east"
+          ],
+          "sources": [
+            "H2",
+            "H3"
+          ],
+          "probability_knows": {
+            "H2": 1.0,
+            "H3": 0.0
+          },
+          "available_at": {
+            "H2": 0,
+            "H3": 0
+          },
+          "query_cost": {
+            "H2": 1.0,
+            "H3": 1.0
+          },
+          "attempted": [
+            "H2"
+          ],
+          "received_answer": true
+        },
+        "messages": [
+          {
+            "message_id": "m001",
+            "time": 0,
+            "speaker": "H2",
+            "text": "Ο έλεγχος του κιτ Α στο C1 ολοκληρώθηκε.",
+            "valid_for": 100
+          },
+          {
+            "message_id": "m002",
+            "time": 1,
+            "speaker": "H3",
+            "text": "Το ίδιο καρότσι C1 εμφανίζεται πλέον ως C1-east στην οθόνη. Δεν αλλάξαμε καρότσι ή κιτ.",
+            "valid_for": 100
+          },
+          {
+            "message_id": "m003",
+            "speaker": "ROBOT",
+            "time": 1,
+            "valid_for": 0,
+            "text": "Ποια είναι η τρέχουσα κατάσταση ελέγχου για το C1-east;"
+          },
+          {
+            "message_id": "m004",
+            "speaker": "H2",
+            "time": 2,
+            "valid_for": 100,
+            "text": "Επανέλεγξα το C1-east τώρα. Ο έλεγχος ολοκληρώθηκε. Αυτή η ενημέρωση αντικαθιστά τις προηγούμενες αναφορές για το ίδιο καρότσι."
+          }
+        ]
+      },
+      "raw_output": {
+        "evidence": [
+          {
+            "message_id": "m004",
+            "subject": "C1-east",
+            "value": true
+          }
+        ],
+        "conflict": false,
+        "decision": {
+          "action": "dispatch",
+          "recipient": null
+        }
+      },
+      "expected_view_for_offline_scoring": {
+        "case_id": "D02",
+        "subject": "C1-east",
+        "now": 2,
+        "deadline": 12,
+        "evidence": [
+          {
+            "subject": "C1-east",
+            "value": true,
+            "source": "H2",
+            "timestamp": 2,
+            "ttl": 100
+          }
+        ],
+        "aliases": {
+          "C1-east": "C1"
+        },
+        "conflict": false,
+        "sources": [
+          "H2",
+          "H3"
+        ],
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 0.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1.0,
+          "H3": 1.0
+        },
+        "attempted": [
+          "H2"
+        ],
+        "received_answer": true
+      },
+      "original_action": {
+        "action": "dispatch",
+        "recipient": null
+      },
+      "raw_checks": {
+        "evidence_exact": true,
+        "conflict_correct": true,
+        "current_status_correct": true
+      }
+    },
+    {
+      "case": "D02",
+      "policy": "cost_blind",
+      "turn": 1,
+      "public_input": {
+        "task": {
+          "subject": "C1-east",
+          "default_subject": "C1",
+          "now": 1,
+          "deadline": 12,
+          "aliases": {
+            "C1-east": "C1"
+          },
+          "known_subjects": [
+            "C1",
+            "C1-east"
+          ],
+          "sources": [
+            "H2",
+            "H3"
+          ],
+          "probability_knows": {
+            "H2": 1.0,
+            "H3": 0.0
+          },
+          "available_at": {
+            "H2": 0,
+            "H3": 0
+          },
+          "query_cost": {
+            "H2": 1.0,
+            "H3": 1.0
+          },
+          "attempted": [],
+          "received_answer": false
+        },
+        "messages": [
+          {
+            "message_id": "m001",
+            "time": 0,
+            "speaker": "H2",
+            "text": "Ο έλεγχος του κιτ Α στο C1 ολοκληρώθηκε.",
+            "valid_for": 100
+          },
+          {
+            "message_id": "m002",
+            "time": 1,
+            "speaker": "H3",
+            "text": "Το ίδιο καρότσι C1 εμφανίζεται πλέον ως C1-east στην οθόνη. Δεν αλλάξαμε καρότσι ή κιτ.",
+            "valid_for": 100
+          }
+        ]
+      },
+      "raw_output": {
+        "evidence": [
+          {
+            "message_id": "m001",
+            "subject": "C1",
+            "value": true
+          },
+          {
+            "message_id": "m002",
+            "subject": "C1-east",
+            "value": true
+          }
+        ],
+        "conflict": false,
+        "decision": {
+          "action": "dispatch",
+          "recipient": null
+        }
+      },
+      "expected_view_for_offline_scoring": {
+        "case_id": "D02",
+        "subject": "C1-east",
+        "now": 1,
+        "deadline": 12,
+        "evidence": [
+          {
+            "subject": "C1",
+            "value": true,
+            "source": "H2",
+            "timestamp": 0,
+            "ttl": 100
+          }
+        ],
+        "aliases": {
+          "C1-east": "C1"
+        },
+        "conflict": false,
+        "sources": [
+          "H2",
+          "H3"
+        ],
+        "probability_knows": {
+          "H2": 1.0,
+          "H3": 0.0
+        },
+        "available_at": {
+          "H2": 0,
+          "H3": 0
+        },
+        "query_cost": {
+          "H2": 1.0,
+          "H3": 1.0
+        },
+        "attempted": [],
+        "received_answer": false
+      },
+      "original_action": {
+        "action": "dispatch",
+        "recipient": null
+      },
+      "raw_checks": {
+        "evidence_exact": false,
+        "conflict_correct": true,
+        "current_status_correct": true
+      }
+    }
+  ]
+}

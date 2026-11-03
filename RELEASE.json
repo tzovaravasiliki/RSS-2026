@@ -1,0 +1,35 @@
+{
+  "files": {
+    "engine.py": "89debda4ee144097ffcf445c56e18c214c9ff44a38fd1cbbdbe21ff6a479b1bc",
+    "contracts.py": "5fb06d1612372490202b71344ee83cee8cc6df75b6badf3e7a864ffffeb0c814",
+    "catalog.py": "064b88aab72f3f1a767d62c2456ddafc5134e4856afd546574f698cfd7bbba29",
+    "providers.py": "5d94c5b4f71673f744a16753d89ffe9101fa329913f0ab85a9f65afb7c371a7f",
+    "temporal_core.py": "c42937a881a3c1a6f693f370bc9b4f10b25d9d1bbc532f44250e1afc09c3ec77",
+    "analysis.py": "33b3f794ba4b6c87052960ab55462a1ec1ce8fb903ecb5f4054e388ad51be14e",
+    "manager.py": "4ebab1898fcb6f7bbf0b9d57ab95cee12fb9e6e21a2e112ac837ef069357605e",
+    "storage.py": "6bd9e815a2d2cea444ee92cd8c07f6ff22f8bf27f23770848522b0ebe185158a",
+    "app.py": "71c2a462b160d40e127aaabe9ed631a4666b031c484bd067c648d1937a72b877",
+    "evidence_guard.py": "c46d48dec2afe050e8987147c2b25523d049c7451889fb3801f5bac7d117ba95"
+  },
+  "sha256": "03d774bcc32c882eeb514f088d4ba5b48cf4017bfeb73dac9955f3fc9f974de9",
+  "prompt_sha256": "95a3b0374f76ecae2b1ffab900d1a71cd8afcc0884ee542f8b182c64c56ba31b",
+  "release": "RSS2027 Research Workbench 1.1",
+  "created_utc": "2026-10-31",
+  "dataset_sha256": "7296c482d8788987dbfc2bf918f319908f445be6ac90b870d8c2d504f8c2495b",
+  "dataset_file_sha256": "7f9e18aeb520a8b1a74ee52081d3e83dbaf619dbfd2032ae08c6b268e3f8052f",
+  "source_release": "1.0 + UI patch 1.0.1",
+  "evidence_guard": "explicit-support-v1",
+  "checks": {
+    "unittest": 47,
+    "fixture_case_policy_modes": 280,
+    "recorded_turns": 12,
+    "raw_error_turns": 4,
+    "admitted_error_turns": 0,
+    "rejected_claims": 4,
+    "changed_actions_on_saved_inputs": 1,
+    "new_paid_api_calls_performed": 0,
+    "python": "3.12.14",
+    "windows": "Mock locking regression only; Windows launchers not executed",
+    "browser": "Node VM startup and guarded experiment overview/dialogue; no full browser visual QA"
+  }
+}
