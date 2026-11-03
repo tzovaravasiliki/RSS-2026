@@ -43,3 +43,7 @@ Local experiments under `workspace/`, generated audit outputs, caches, and crede
 The original version 1.1 release documents describe the state at packaging time; later experimental runs do not change that release snapshot.
 
 The research target is RSS 2027; the repository name does not change the experiment protocol.
+
+## Team simulation view
+
+Open **Προσομοίωση ομάδας** inside an experiment, or use **Άνοιγμα offline προσομοίωσης** on the home page. A schematic robot, cart and H1–H3 source cards show the recorded public state before each decision. Use Previous/Next or the turn slider to inspect uncertainty, availability, interruption cost and recipient selection. This is recorded coordination playback, not physical robot motion. See [simulation UI notes](docs/SIMULATION_UI_GR.md).

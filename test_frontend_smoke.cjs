@@ -45,7 +45,7 @@ function fixture(){
    policies:{cost_aware:'test',always_reverify:'test',cost_blind:'test',llm:'test'},documents:['README_GR.md']};
  return {data,state};
 }
-async function boot(hash,fail=false,sourceFile=path.join(__dirname,'web/app.js'),experiment=null){
+async function boot(hash,fail=false,sourceFile=path.join(__dirname,'web/app.js'),experiment=null,exposeSimulation=false){
  const doc=new Document(),requests=[],listeners={};const {data,state}=fixture();
  const context={document:doc,location:{hash},console,AbortController,structuredClone,Blob,URL,
    setTimeout,clearTimeout,addEventListener(name,fn){listeners[name]=fn;},
@@ -54,7 +54,9 @@ async function boot(hash,fail=false,sourceFile=path.join(__dirname,'web/app.js')
  // Actual browser Window has non-configurable top, unlike a plain Node global.
  Object.defineProperty(context,'top',{get(){return context;},configurable:false});
  context.status='';
- vm.runInNewContext(fs.readFileSync(sourceFile,'utf8'),context,{filename:'app.js',timeout:2000});
+ let source=fs.readFileSync(sourceFile,'utf8');
+ if(exposeSimulation)source=source.replace(/\}\)\(\);\s*$/, 'window.__simulationTest={simulationSnapshot,simulationBoard};})();');
+ vm.runInNewContext(source,context,{filename:'app.js',timeout:2000});
  await new Promise(resolve=>setImmediate(resolve));
  await new Promise(resolve=>setImmediate(resolve));
  return {doc,requests,context,listeners};
@@ -99,7 +101,66 @@ async function main(){
  assert.ok(detail.doc.getElementById('episode-body').textContent.includes('no_explicit_status'));
  assert.ok(detail.doc.getElementById('episode-body').textContent.includes('ask → H2'));
  assert.ok(detail.doc.getElementById('episode-body').textContent.includes('Άγνωστο / χωρίς αποδεκτή επιβεβαίωση'));
- console.log('Frontend regression checks: 6 routes, guarded experiment table/dialogue, read-only globals, startup failure UI, no startup inference. PASS');
+
+ const simulationTab=detail.doc.groups['[data-tab]'].find(x=>x.dataset.tab==='simulation');
+ assert.ok(simulationTab,'Simulation tab is missing');
+ await simulationTab.onclick();
+ await new Promise(resolve=>setImmediate(resolve));
+ await new Promise(resolve=>setImmediate(resolve));
+ const scene=detail.doc.getElementById('episode-body');
+ assert.ok(scene.textContent.includes('Ρομπότ συντονιστής'));
+ assert.ok(scene.textContent.includes('Ποιον πρέπει να ρωτήσει το ρομπότ;'));
+ assert.ok(scene.textContent.includes('H2'));
+ assert.ok(detail.doc.getElementById('sim-prev'));
+ assert.ok(detail.doc.getElementById('sim-next'));
+ const probe=await boot('#home',false,undefined,null,true);
+ const {simulationSnapshot:snapshot,simulationBoard:board}=probe.context.__simulationTest;
+ const publicInput={task:{subject:'C1-east',aliases:{'C1-east':'C1'},now:4,deadline:8,sources:['H2','H3'],
+   available_at:{H2:0,H3:6},probability_knows:{H2:.8,H3:.6},query_cost:{H2:5,H3:1},attempted:[]},
+   messages:[{message_id:'m1',speaker:'H2',text:'Completed.',time:1,valid_for:2},
+             {message_id:'m2',speaker:'H3',text:'Completed.',time:3,valid_for:2}]};
+ const claims=[{message_id:'m1',subject:'C1',value:false},{message_id:'m2',subject:'C1',value:true}];
+ const currentStep={accepted_evidence:claims,raw_output:{conflict:false},selected_action:{action:'ask',recipient:'H2'}};
+ assert.equal(snapshot(publicInput,currentStep).value,true,'Aliases and freshness must bind to public message metadata');
+ assert.equal(snapshot(publicInput,currentStep).current.length,1);
+ assert.equal(snapshot(publicInput,currentStep).expired,1);
+ assert.equal(snapshot(publicInput,{...currentStep,raw_output:{conflict:true}}).value,null);
+ assert.equal(snapshot(publicInput,{...currentStep,accepted_evidence:[{message_id:'m2',subject:'C2',value:true}]}).value,null);
+ assert.equal(snapshot(publicInput,{...currentStep,accepted_evidence:[claims[0]]}).value,null);
+ assert.equal(snapshot({...publicInput,task:{...publicInput.task,now:3}},{...currentStep,accepted_evidence:[claims[0]]}).value,false,'TTL boundary is inclusive');
+ assert.equal(snapshot(publicInput,{raw_output:{evidence:{invalid:true}}}).value,null,'Invalid unfinished extraction is not evidence');
+ assert.equal(snapshot(publicInput,{raw_output:{evidence:[null,{},false,{message_id:'m2',subject:'C1',value:'true'}]}}).value,null,'Rejected malformed claims must not crash simulation');
+ const unknown=board(publicInput,{...currentStep,accepted_evidence:[]},{policy:'cost_aware',steps:[]},0);
+ assert.ok(unknown.includes('Χρειάζεται πληροφορία'));
+ assert.ok(unknown.includes('Διαθέσιμος στο t=6'));
+ assert.ok(!unknown.includes('actual_verified'));
+ const malicious=structuredClone(publicInput);
+ malicious.task.subject='<img src=x onerror=alert(1)>';
+ malicious.messages[0].text='<script>alert(1)</script>';
+ const escaped=board(malicious,currentStep,{policy:'cost_aware',steps:[]},0);
+ assert.ok(!escaped.includes('<script>'));
+ assert.ok(!escaped.includes('<img src=x'));
+ assert.ok(escaped.includes('&lt;script&gt;'));
+ const future={...step,selected_action:{action:'ask',recipient:'FUTURE_PERSON'},transition:{result:'future'}};
+ const past={...step,selected_action:{action:'ask',recipient:'H3'},transition:{result:'answered'}};
+ const history=board(publicInput,currentStep,{policy:'cost_aware',steps:[past,currentStep,future]},1);
+ assert.ok(!history.includes('FUTURE_PERSON'),'Recorded future actions must not leak into an earlier snapshot');
+ // Navigate two recorded snapshots: the team status must change with the selected turn.
+ const multiSession=structuredClone(session);
+ multiSession.runs[0].steps=[{...step,public_input:publicInput,accepted_evidence:[]},
+                           {...currentStep,public_input:{...publicInput,task:{...publicInput.task,now:5}}}];
+ const multi=await boot('#experiment/mock-guard',false,undefined,{session:multiSession,summary});
+ await multi.doc.groups['[data-tab]'].find(x=>x.dataset.tab==='simulation').onclick();
+ await new Promise(resolve=>setImmediate(resolve));
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.ok(multi.doc.getElementById('episode-body').textContent.includes('t = 5'));
+ multi.doc.getElementById('sim-prev').onclick();
+ assert.ok(multi.doc.getElementById('episode-body').textContent.includes('t = 4'));
+ assert.ok(multi.doc.getElementById('episode-body').textContent.includes('Χρειάζεται πληροφορία'));
+ multi.doc.getElementById('sim-next').onclick();
+ assert.ok(multi.doc.getElementById('episode-body').textContent.includes('t = 5'));
+
+ console.log('Frontend regression checks: 6 routes, guarded experiment table/dialogue, read-only globals, startup failure UI, no startup inference, simulation navigation, evidence binding/freshness, no future history, escaped public text. PASS');
 }
 if(require.main===module)main().catch(error=>{console.error(error);process.exitCode=1;});
 module.exports={boot};
