@@ -44,6 +44,12 @@ The original version 1.1 release documents describe the state at packaging time;
 
 The research target is RSS 2027; the repository name does not change the experiment protocol.
 
-## Team simulation view
+## Interactive training lab and recorded playback
 
-Open **Προσομοίωση ομάδας** inside an experiment, or use **Άνοιγμα offline προσομοίωσης** on the home page. A schematic robot, cart and H1–H3 source cards show the recorded public state before each decision. Use Previous/Next or the turn slider to inspect uncertainty, availability, interruption cost and recipient selection. This is recorded coordination playback, not physical robot motion. See [simulation UI notes](docs/SIMULATION_UI_GR.md).
+Open **Διαδραστικό εργαστήριο** to choose a scenario, click a human source, ask, wait, dispatch or escalate. Source costs can be changed for an explicitly labelled training variant. Compare the three scripted policies from the same initial state. The lab runs entirely in the browser, uses structured initial annotations and programmed replies, makes no provider calls, and does not save or score research experiments.
+
+Inside a saved experiment, **Προσομοίωση ομάδας** provides Play/Pause, speed, and before/after frames. It displays only the recorded public information available at the chosen phase. Replay makes no new inference calls and does not change the saved session. A frozen scenario can be copied into a separate training attempt.
+
+The isometric room, figures, signals and delivery movement are symbolic. They do not model physical robot navigation or real team behaviour. See [interactive simulation notes](docs/SIMULATION_UI_GR.md).
+
+Offline validation: `node test_frontend_smoke.cjs` and `py -m unittest test_interactive_parity -v`. The parity test checks the browser training adapter against the Python simulator using synthetic policy rollouts and manual paths. Node is optional and used only for tests.

@@ -15,7 +15,9 @@ class Element {
  append(...children){this.children.push(...children);}
  replaceChildren(...children){this._text='';this._html='';this.children=children;}
  close(){} showModal(){} click(){} remove(){}
- querySelector(selector){if(selector==='select')return {value:'openai'};if(selector==='input')return {value:'gpt-5-mini-2025-08-07'};return null;}
+ querySelector(selector){if(selector.startsWith('#'))return this.doc.querySelector(selector);if(selector==='select')return {value:'openai'};if(selector==='input')return {value:'gpt-5-mini-2025-08-07'};return null;}
+ querySelectorAll(selector){return this.doc.querySelectorAll(selector);}
+ getAttribute(name){return this.attributes?.[name]??null;}
 }
 class Document {
  constructor(){this.elements=new Map();this.groups={};for(const id of ['main','global-key','breadcrumb','dialog','dialog-close','dialog-body','toast'])this.elements.set(id,new Element(this,id));}
@@ -32,6 +34,13 @@ class Document {
    const inputs=[...html.matchAll(new RegExp('<input\\b[^>]*name="'+name+'"[^>]*>','g'))].map(m=>{const el=new Element(this);el.value=m[0].match(/value="([^"]+)"/)[1];el.checked=/\bchecked\b/.test(m[0]);return el;});
    if(inputs.length){this.groups['input[name='+name+']']=inputs;this.groups['input[name='+name+']:checked']=inputs.filter(e=>e.checked);}
   }
+
+  for(const name of ['ask','wait','person']){
+   this.groups['[data-'+name+']']=[...html.matchAll(new RegExp('<[a-z][a-z0-9]*\\b[^>]*data-'+name+'="([^"]+)"[^>]*>','g'))].map(m=>{
+    const el=new Element(this);el.dataset[name]=m[1];el.attributes=Object.fromEntries([...m[0].matchAll(/([a-z-]+)="([^"]*)"/g)].map(a=>[a[1],a[2]]));return el;
+   });
+  }
+
   if(html.includes('class="model-row"'))this.groups['.model-row']=[new Element(this)];
   if(html.includes('data-tab="'))this.groups['[data-tab]']=[...html.matchAll(/data-tab="([^"]+)"/g)].map(m=>{const el=new Element(this);el.dataset.tab=m[1];return el;});
   this.groups['[data-case]']=[...html.matchAll(/data-case="([^"]+)"/g)].map(m=>{const el=new Element(this);el.dataset.case=m[1];return el;});
@@ -47,7 +56,7 @@ function fixture(){
 }
 async function boot(hash,fail=false,sourceFile=path.join(__dirname,'web/app.js'),experiment=null,exposeSimulation=false){
  const doc=new Document(),requests=[],listeners={};const {data,state}=fixture();
- const context={document:doc,location:{hash},console,AbortController,structuredClone,Blob,URL,
+ const context={document:doc,location:{hash},console,AbortController,structuredClone,Blob,URL,matchMedia:()=>({matches:true}),
    setTimeout,clearTimeout,addEventListener(name,fn){listeners[name]=fn;},
    fetch:async url=>{requests.push(url);if(fail)throw Error('mock local server offline');return {ok:true,status:200,json:async()=>url==='/api/state'?state:url==='/api/dataset'?data:experiment&&url.startsWith('/api/experiments/')?experiment:{text:'# Test protocol',name:'README_GR.md'}};}};
  context.window=context;
@@ -55,18 +64,18 @@ async function boot(hash,fail=false,sourceFile=path.join(__dirname,'web/app.js')
  Object.defineProperty(context,'top',{get(){return context;},configurable:false});
  context.status='';
  let source=fs.readFileSync(sourceFile,'utf8');
- if(exposeSimulation)source=source.replace(/\}\)\(\);\s*$/, 'window.__simulationTest={simulationSnapshot,simulationBoard};})();');
+ if(exposeSimulation)source=source.replace(/\}\)\(\);\s*$/, 'window.__simulationTest={simulationSnapshot,simulationBoard,InteractiveSim};})();');
  vm.runInNewContext(source,context,{filename:'app.js',timeout:2000});
  await new Promise(resolve=>setImmediate(resolve));
  await new Promise(resolve=>setImmediate(resolve));
  return {doc,requests,context,listeners};
 }
 async function main(){
- for(const [hash,expected] of [['#home','Από τον διάλογο στην απόφαση'],['#new','Σχεδίασε το επόμενο πείραμα'],
+ for(const [hash,expected] of [['#simulation','Διαδραστικό εργαστήριο'],['#home','Από τον διάλογο στην απόφαση'],['#new','Σχεδίασε το επόμενο πείραμα'],
    ['#experiments','Πειράματα & αποτελέσματα'],['#scenarios','Σενάρια & ετικέτες'],
    ['#protocol','Πρωτόκολλο & βιβλιογραφία'],['#settings','Ρυθμίσεις περιβάλλοντος']]){
   const app=await boot(hash);
-  assert.ok(app.doc.getElementById('main').textContent.includes(expected),'Route did not render: '+hash);
+  assert.ok(app.doc.getElementById('main').textContent.includes(expected),'Route did not render: '+hash+' | '+app.doc.getElementById('main').textContent+' | '+app.doc.getElementById('toast').textContent);
   assert.equal(typeof app.context.top,'object');assert.equal(app.context.status,'');
   assert.ok(app.requests.every(url=>url.startsWith('/api/')));
  }
@@ -107,7 +116,7 @@ async function main(){
  await simulationTab.onclick();
  await new Promise(resolve=>setImmediate(resolve));
  await new Promise(resolve=>setImmediate(resolve));
- const scene=detail.doc.getElementById('episode-body');
+ const scene=detail.doc.getElementById('detail-content');
  assert.ok(scene.textContent.includes('Ρομπότ συντονιστής'));
  assert.ok(scene.textContent.includes('Ποιον πρέπει να ρωτήσει το ρομπότ;'));
  assert.ok(scene.textContent.includes('H2'));
@@ -153,14 +162,104 @@ async function main(){
  await multi.doc.groups['[data-tab]'].find(x=>x.dataset.tab==='simulation').onclick();
  await new Promise(resolve=>setImmediate(resolve));
  await new Promise(resolve=>setImmediate(resolve));
- assert.ok(multi.doc.getElementById('episode-body').textContent.includes('t = 5'));
- multi.doc.getElementById('sim-prev').onclick();
- assert.ok(multi.doc.getElementById('episode-body').textContent.includes('t = 4'));
- assert.ok(multi.doc.getElementById('episode-body').textContent.includes('Χρειάζεται πληροφορία'));
+ assert.ok(multi.doc.getElementById('detail-content').textContent.includes('t = 4'));
  multi.doc.getElementById('sim-next').onclick();
- assert.ok(multi.doc.getElementById('episode-body').textContent.includes('t = 5'));
+ assert.ok(multi.doc.getElementById('detail-content').textContent.includes('t = 5'));
+ multi.doc.getElementById('sim-prev').onclick();
+ assert.ok(multi.doc.getElementById('detail-content').textContent.includes('t = 4'));
+ assert.ok(multi.doc.getElementById('detail-content').textContent.includes('Άγνωστη / μη ισχύουσα επιβεβαίωση'));
+ multi.doc.getElementById('sim-next').onclick();
+ assert.ok(multi.doc.getElementById('detail-content').textContent.includes('t = 5'));
 
- console.log('Frontend regression checks: 6 routes, guarded experiment table/dialogue, read-only globals, startup failure UI, no startup inference, simulation navigation, evidence binding/freshness, no future history, escaped public text. PASS');
+
+ // The interactive lab runs no provider requests and never changes recorded experiments.
+ const lab=await boot('#simulation',false,undefined,null,true);
+ const initialRequests=[...lab.requests];
+ assert.deepEqual(initialRequests,['/api/state','/api/dataset']);
+ assert.ok(lab.doc.getElementById('interactive-lab').textContent.includes('ΕΚΠΑΙΔΕΥΤΙΚΟ SANDBOX'));
+ assert.ok(lab.doc.groups['[data-ask]'].some(x=>x.dataset.ask==='H3'));
+ lab.doc.getElementById('lab-follow').onclick();
+ await new Promise(resolve=>setTimeout(resolve,10));
+ assert.ok(lab.doc.getElementById('interactive-lab').textContent.includes('Λήφθηκε νέα επιβεβαίωση'));
+ assert.deepEqual(lab.requests,initialRequests,'Sandbox actions must not call an API');
+ lab.doc.getElementById('lab-dispatch').onclick();
+ await new Promise(resolve=>setTimeout(resolve,10));
+ assert.ok(lab.doc.getElementById('interactive-lab').textContent.includes('Ολοκληρώθηκε η παράδοση'));
+ lab.doc.getElementById('lab-reset').onclick();
+ lab.doc.getElementById('lab-compare').onclick();
+ assert.ok(lab.doc.getElementById('interactive-lab').textContent.includes('Εκπαιδευτική σύγκριση'));
+
+ lab.doc.getElementById('lab-policy').value='cost_blind';
+ lab.doc.getElementById('lab-policy').onchange();
+ assert.ok(lab.doc.getElementById('interactive-lab').textContent.includes('Δοκίμασε την πρόταση: Ερώτηση → H2'));
+ lab.doc.getElementById('lab-cost-h2').value='1';
+ lab.doc.getElementById('lab-cost-h3').value='8';
+ lab.doc.getElementById('lab-cost-apply').onclick();
+ assert.ok(lab.doc.getElementById('interactive-lab').textContent.includes('Δική σου παραλλαγή κόστους'));
+ lab.doc.getElementById('lab-policy').value='cost_aware';
+ lab.doc.getElementById('lab-policy').onchange();
+ lab.doc.getElementById('lab-follow').onclick();
+ lab.doc.getElementById('lab-reset').onclick();
+ await new Promise(resolve=>setTimeout(resolve,10));
+ assert.ok(!lab.doc.getElementById('interactive-lab').textContent.includes('Λήφθηκε νέα επιβεβαίωση'),'Reset cancels an in-flight visual timer');
+ lab.doc.groups['[data-person]'].find(x=>x.dataset.person==='H3').onclick();
+ await new Promise(resolve=>setTimeout(resolve,10));
+ assert.ok(lab.doc.getElementById('interactive-lab').textContent.includes('Λήφθηκε νέα επιβεβαίωση'),'Clicking the source figure must request its programmed answer');
+ assert.deepEqual(lab.requests,initialRequests);
+
+ const model=lab.context.__simulationTest.InteractiveSim;
+ const c=fixture().data.cases.find(c=>c.id==='D09'),unchanged=JSON.stringify(c),one=new model.Sandbox(c);
+ assert.equal(one.snapshot().value,null);
+ const extraPublic=structuredClone(c);extraPublic.public.actual_verified='PRIVATE_EXTRA';
+ assert.ok(!JSON.stringify(new model.Sandbox(extraPublic).snapshot()).includes('PRIVATE_EXTRA'),'Only allowed public task fields enter the view');
+ assert.ok(!JSON.stringify(one.snapshot()).includes('actual_verified'),'Private truth is not exposed in public sandbox snapshots');
+ assert.ok(!JSON.stringify(one.snapshot()).includes('actual_access'));
+ assert.equal(one.recommendation('cost_aware').recipient,'H3');
+ assert.equal(one.recommendation('cost_blind').recipient,'H2');
+ one.apply({action:'ask',recipient:'H3'});
+ assert.equal(one.snapshot().cost,1);
+ assert.equal(one.snapshot().value,true);
+ one.apply({action:'dispatch',recipient:null});
+ assert.equal(one.snapshot().last.result,'delivered');
+ assert.throws(()=>one.apply({action:'dispatch',recipient:null}),/ολοκληρώθηκε/);
+ assert.equal(JSON.stringify(c),unchanged,'Training must not mutate dataset');
+ const variant=new model.Sandbox(c,{H2:1,H3:7});
+ assert.equal(variant.recommendation('cost_aware').recipient,'H2');
+ assert.equal(variant.recommendation('cost_blind').recipient,'H2');
+ assert.throws(()=>new model.Sandbox(c,{H2:NaN,H3:1}),/κόστος/);
+ const blockedModel=new model.Sandbox(fixture().data.cases.find(c=>c.id==='D01'));
+ blockedModel.apply({action:'dispatch',recipient:null});
+ assert.equal(blockedModel.snapshot().last.result,'dispatch_blocked');
+ const unsafeScene=model.scene(blockedModel.snapshot());
+ assert.ok(!unsafeScene.includes('class="lab-mobile-robot is-delivered'),'Blocked attempts must not animate a delivery');
+ const knownless=new model.Sandbox(fixture().data.cases.find(c=>c.id==='D07'));
+ knownless.apply({action:'ask',recipient:'H2'});
+ assert.equal(knownless.snapshot().last.answer,'unknown');
+ assert.equal(knownless.snapshot().publicInput.task.probability_knows.H2,0);
+ assert.throws(()=>knownless.apply({action:'ask',recipient:'H2'}),/ήδη/);
+ // Before/after replay reveals a saved answer only in the post-action phase.
+ const replayRow={steps:[{public_input:publicInput,accepted_evidence:[],raw_output:{conflict:false},
+  selected_action:{action:'ask',recipient:'H2'},transition:{action:'ask',recipient:'H2',time:4,result:'answered',answer:true,cost:5,actual_verified:'PRIVATE_MARKER'}}]};
+ const frozen=JSON.stringify(replayRow),before=model.replaySnapshot(replayRow,0),after=model.replaySnapshot(replayRow,1);
+ assert.equal(before.value,null);assert.equal(before.last,null);assert.equal(before.cost,0);
+ assert.ok(!JSON.stringify(before).includes('PRIVATE_MARKER'));
+ assert.ok(!JSON.stringify(before).includes('"answer":true'),'Before-action frames must not contain the future answer');
+ assert.equal(after.value,true);assert.equal(after.cost,5);assert.equal(after.publicInput.task.now,5);
+ assert.ok(!JSON.stringify(after.last).includes('PRIVATE_MARKER'));
+ assert.ok(!JSON.stringify(after.history).includes('PRIVATE_MARKER'));
+ assert.equal(JSON.stringify(replayRow),frozen);
+ const rejectedRow={steps:[{public_input:publicInput,raw_output:{evidence:[{message_id:'m2',subject:'C1',value:true}],conflict:false},status:'error',error:'Invalid output'}]};
+ assert.equal(model.replaySnapshot(rejectedRow,0).value,null,'A rejected model extraction is not an accepted status');
+ const timerTest=await boot('#experiment/mock-guard',false,undefined,{session:multiSession,summary});
+ await timerTest.doc.groups['[data-tab]'].find(x=>x.dataset.tab==='simulation').onclick();
+ await new Promise(resolve=>setImmediate(resolve));
+ await new Promise(resolve=>setImmediate(resolve));
+ timerTest.doc.getElementById('sim-play').onclick();
+ assert.ok(timerTest.doc.getElementById('sim-play'));
+ timerTest.context.location.hash='#home';
+ await timerTest.listeners.hashchange();
+
+ console.log('Frontend regression checks: 7 routes, guarded experiment table/dialogue, read-only globals, startup failure UI, no startup inference, simulation navigation, evidence binding/freshness, no future history, escaped public text, manual sandbox, structured policy variants, two-phase replay and timer disposal. PASS');
 }
 if(require.main===module)main().catch(error=>{console.error(error);process.exitCode=1;});
 module.exports={boot};
