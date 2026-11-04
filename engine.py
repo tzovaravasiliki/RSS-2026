@@ -27,7 +27,7 @@ FINAL={'delivered','escalated','dispatch_blocked','deadline_missed','step_limit'
 
 def code_fingerprint():
     names=('engine.py','contracts.py','catalog.py','providers.py','temporal_core.py',
-           'analysis.py','manager.py','storage.py','app.py','evidence_guard.py')
+           'analysis.py','manager.py','storage.py','app.py','evidence_guard.py','research.py')
     files={n:hashlib.sha256((ROOT/n).read_bytes()).hexdigest() for n in names}
     return {'files':files,'sha256':contracts.digest(files),'prompt_sha256':contracts.digest(contracts.PROMPT)}
 

@@ -29,14 +29,16 @@ class Manager:
                 s.update(status='paused_restart',updated_at=now())
                 store.save(s)
 
-    def create(self,config,name='New experiment'):
-        draft=engine.plan(config,self.store.dataset())
-        session={'id':uuid.uuid4().hex,'version':'1.1','name':str(name).strip()[:120] or 'New experiment',
+    def create(self,config,name='New experiment',dataset=None,study_design=None):
+        draft=engine.plan(config,self.store.dataset() if dataset is None else dataset)
+        session={'id':uuid.uuid4().hex,'version':'1.2','name':str(name).strip()[:120] or 'New experiment',
             'created_at':now(),'updated_at':now(),'status':'ready','config':draft['config'],
             'plan':draft['pairs'],'dataset':draft['dataset'],'dataset_sha256':draft['dataset_sha256'],
             'fingerprint':draft['fingerprint'],'readiness':draft['readiness'],'runs':[],'batches':[],
             'prompt':contracts.PROMPT,'research_status':'engineering/development unless independently reviewed evaluation',
             'oracle_gate':'Simulator knows truth and labels. Count proposals before the gate; no clinical safety claim.'}
+        if study_design is not None:
+            session['study_design']=copy.deepcopy(study_design)
         session['protocol_documents']={p.name:p.read_text(encoding='utf-8') for p in (engine.ROOT/'docs').glob('*.md')}
         session['protocol_sha256']=contracts.digest(session['protocol_documents'])
         session['runtime']={'python':platform.python_version(),'platform':platform.system(),'architecture':platform.machine()}

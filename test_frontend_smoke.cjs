@@ -6,7 +6,7 @@ const vm=require('node:vm');
 const path=require('node:path');
 
 class Element {
- constructor(doc,id=''){this.doc=doc;this.id=id;this._html='';this._text='';this.value='';this.checked=false;this.dataset={};this.style={};this.children=[];this.classList={toggle(){}};}
+ constructor(doc,id=''){this.doc=doc;this.id=id;this._html='';this._text='';this.value='';this.checked=false;this.disabled=false;this.dataset={};this.style={};this.children=[];this.classList={toggle(){}};}
  set innerHTML(html){this._html=String(html);this._text='';this.doc.parse(this._html);}
  get innerHTML(){return this._html;}
  set outerHTML(html){this.innerHTML=html;}
@@ -24,18 +24,19 @@ class Document {
  getElementById(id){return this.elements.get(id)||null;}
  createElement(){return new Element(this);}
  querySelector(selector){if(selector==='meta[name="workbench-token"]')return {content:'mock-local-token'};return selector.startsWith('#')?this.getElementById(selector.slice(1)):null;}
- querySelectorAll(selector){return this.groups[selector]||[];}
+ querySelectorAll(selector){const match=selector.match(/^input\[name=([a-z_]+)\]:checked$/);if(match)return (this.groups['input[name='+match[1]+']']||[]).filter(el=>el.checked);return this.groups[selector]||[];}
  parse(html){
   for(const match of html.matchAll(/<([a-z][a-z0-9]*)\b([^>]*)>/g)){
    const attrs=match[2],id=attrs.match(/\bid="([^"]+)"/);
-   if(id){const el=new Element(this,id[1]);el.value=attrs.match(/\bvalue="([^"]*)"/)?.[1]||'';if(id[1]==='exp-mode')el.value='offline';if(id[1]==='exp-purpose')el.value='development';if(id[1]==='document-select')el.value='README_GR.md';this.elements.set(id[1],el);}
+   if(id){const el=new Element(this,id[1]);el.disabled=/\sdisabled(?:\s|=|$)/.test(attrs);el.value=attrs.match(/\bvalue="([^"]*)"/)?.[1]||'';if(id[1]==='exp-mode')el.value='offline';if(id[1]==='exp-purpose')el.value='development';if(id[1]==='document-select')el.value='README_GR.md';this.elements.set(id[1],el);}
   }
-  for(const name of ['case','policy']){
+  for(const match of html.matchAll(/<textarea\b[^>]*id="([^"]+)"[^>]*>([\s\S]*?)<\/textarea>/g)){const el=this.getElementById(match[1]);if(el)el.value=match[2];}
+  for(const name of ['case','policy','study_case','study_policy']){
    const inputs=[...html.matchAll(new RegExp('<input\\b[^>]*name="'+name+'"[^>]*>','g'))].map(m=>{const el=new Element(this);el.value=m[0].match(/value="([^"]+)"/)[1];el.checked=/\bchecked\b/.test(m[0]);return el;});
    if(inputs.length){this.groups['input[name='+name+']']=inputs;this.groups['input[name='+name+']:checked']=inputs.filter(e=>e.checked);}
   }
 
-  for(const name of ['ask','wait','person']){
+  for(const name of ['ask','wait','person','inspect']){
    this.groups['[data-'+name+']']=[...html.matchAll(new RegExp('<[a-z][a-z0-9]*\\b[^>]*data-'+name+'="([^"]+)"[^>]*>','g'))].map(m=>{
     const el=new Element(this);el.dataset[name]=m[1];el.attributes=Object.fromEntries([...m[0].matchAll(/([a-z-]+)="([^"]*)"/g)].map(a=>[a[1],a[2]]));return el;
    });
@@ -49,21 +50,22 @@ class Document {
 
 function fixture(){
  const data=JSON.parse(fs.readFileSync(path.join(__dirname,'data/scenarios.json'),'utf8'));
- const state={case_count:data.cases.length,experiments:[],dataset_name:data.name,workspace:'mock-workspace',
+ const state={case_count:data.cases.length,experiments:[],dataset_name:data.name,workspace:'mock-workspace',dataset_sha256:'fixture-source',study:{question:'Research fixture question'},
    keys:Object.fromEntries(['openai','anthropic','gemini'].map(provider=>[provider,{available:false,variable:provider.toUpperCase()+'_API_KEY'}])),
    policies:{cost_aware:'test',always_reverify:'test',cost_blind:'test',llm:'test'},documents:['README_GR.md']};
  return {data,state};
 }
-async function boot(hash,fail=false,sourceFile=path.join(__dirname,'web/app.js'),experiment=null,exposeSimulation=false){
+async function boot(hash,fail=false,sourceFile=path.join(__dirname,'web/app.js'),experiment=null,exposeSimulation=false,requestHandler=null){
  const doc=new Document(),requests=[],listeners={};const {data,state}=fixture();
- const context={document:doc,location:{hash},console,AbortController,structuredClone,Blob,URL,matchMedia:()=>({matches:true}),
+ const context={document:doc,location:{_hash:hash,get hash(){return this._hash;},set hash(value){this._hash=value.startsWith('#')?value:'#'+value;}},console,AbortController,structuredClone,Blob,URL,matchMedia:()=>({matches:true}),
    setTimeout,clearTimeout,addEventListener(name,fn){listeners[name]=fn;},
-   fetch:async url=>{requests.push(url);if(fail)throw Error('mock local server offline');return {ok:true,status:200,json:async()=>url==='/api/state'?state:url==='/api/dataset'?data:experiment&&url.startsWith('/api/experiments/')?experiment:{text:'# Test protocol',name:'README_GR.md'}};}};
+   fetch:async (url,options)=>{requests.push(url);if(requestHandler){const value=await requestHandler(url,options);if(value!==undefined)return {ok:true,status:200,json:async()=>value};}if(fail)throw Error('mock local server offline');return {ok:true,status:200,json:async()=>url==='/api/state'?state:url==='/api/dataset'?data:experiment&&url.startsWith('/api/experiments/')?experiment:{text:'# Test protocol',name:'README_GR.md'}};}};
  context.window=context;
  // Actual browser Window has non-configurable top, unlike a plain Node global.
  Object.defineProperty(context,'top',{get(){return context;},configurable:false});
  context.status='';
  let source=fs.readFileSync(sourceFile,'utf8');
+ vm.runInNewContext(fs.readFileSync(path.join(__dirname,'web/research-ui.js'),'utf8'),context,{filename:'research-ui.js',timeout:2000});
  if(exposeSimulation)source=source.replace(/\}\)\(\);\s*$/, 'window.__simulationTest={simulationSnapshot,simulationBoard,InteractiveSim};})();');
  vm.runInNewContext(source,context,{filename:'app.js',timeout:2000});
  await new Promise(resolve=>setImmediate(resolve));
@@ -71,7 +73,7 @@ async function boot(hash,fail=false,sourceFile=path.join(__dirname,'web/app.js')
  return {doc,requests,context,listeners};
 }
 async function main(){
- for(const [hash,expected] of [['#simulation','Διαδραστικό εργαστήριο'],['#home','Από τον διάλογο στην απόφαση'],['#new','Σχεδίασε το επόμενο πείραμα'],
+ for(const [hash,expected] of [['#study','Μελέτη με LLMs'],['#simulation','Διαδραστικό εργαστήριο'],['#home','Από τον διάλογο στην απόφαση'],['#new','Σχεδίασε το επόμενο πείραμα'],
    ['#experiments','Πειράματα & αποτελέσματα'],['#scenarios','Σενάρια & ετικέτες'],
    ['#protocol','Πρωτόκολλο & βιβλιογραφία'],['#settings','Ρυθμίσεις περιβάλλοντος']]){
   const app=await boot(hash);
@@ -259,7 +261,59 @@ async function main(){
  timerTest.context.location.hash='#home';
  await timerTest.listeners.hashchange();
 
- console.log('Frontend regression checks: 7 routes, guarded experiment table/dialogue, read-only globals, startup failure UI, no startup inference, simulation navigation, evidence binding/freshness, no future history, escaped public text, manual sandbox, structured policy variants, two-phase replay and timer disposal. PASS');
+
+ // Guided study previews and draft creation never send a start request.
+ const studyPosts=[];
+ const studyHandler=async(url,options)=>{
+  if(url==='/api/study/plan'){
+   const body=JSON.parse(options.body);studyPosts.push({url,body});
+   return {episodes:body.config.case_ids.length*body.config.policies.length,initial_call_cap:body.initial_call_cap,
+    maximum_calls:64,config:body.config,cases:fixture().data.cases.filter(c=>body.config.case_ids.includes(c.id)),
+    study_design:{cost_overrides:body.cost_overrides},warnings:['Development, not independent evaluation'],plan_sha256:'reviewed-study-plan'};
+  }
+  if(url==='/api/study/create'){studyPosts.push({url,body:JSON.parse(options.body)});return {id:'b'.repeat(32),status:'ready'};}
+ };
+ const wizard=await boot('#study',false,undefined,null,false,studyHandler);
+ assert.ok(wizard.doc.getElementById('study-create').disabled);
+ await wizard.doc.getElementById('study-form').onsubmit({preventDefault(){}});
+ assert.equal(studyPosts.length,1);
+ assert.equal(studyPosts[0].body.config.mode,'live');
+ assert.deepEqual(studyPosts[0].body.config.case_ids,['D03','D05']);
+ assert.ok(!wizard.doc.getElementById('study-create').disabled);
+ wizard.doc.getElementById('study-repeats').value='2';
+ wizard.doc.getElementById('study-form').oninput();
+ assert.ok(wizard.doc.getElementById('study-create').disabled);
+ await wizard.doc.getElementById('study-create').onclick();
+ assert.equal(studyPosts.length,1,'Changing the form invalidates a reviewed plan');
+ await wizard.doc.getElementById('study-form').onsubmit({preventDefault(){}});
+ await wizard.doc.getElementById('study-create').onclick();
+ assert.equal(studyPosts.at(-1).body.expected_plan_sha256,'reviewed-study-plan');
+ assert.equal(wizard.context.location.hash,'#experiment/'+'b'.repeat(32));
+ assert.ok(!wizard.requests.some(url=>url.endsWith('/start')),'Study creation must not start billable calls');
+ const bridge=await boot('#simulation',false,undefined,null,false,studyHandler);
+ bridge.doc.getElementById('lab-cost-h2').value='2';bridge.doc.getElementById('lab-cost-h3').value='9';
+ bridge.doc.getElementById('lab-cost-apply').onclick();
+ bridge.doc.getElementById('lab-research').onclick();
+ assert.equal(bridge.context.location.hash,'#study');
+ await bridge.listeners.hashchange();
+ await bridge.doc.getElementById('study-form').onsubmit({preventDefault(){}});
+ assert.deepEqual(studyPosts.at(-1).body.config.case_ids,['D09']);
+ assert.deepEqual(studyPosts.at(-1).body.cost_overrides,{D09:{H2:2,H3:9}});
+ assert.ok(!bridge.requests.some(url=>url.endsWith('/start')));
+ const researchReport={unique_case_ids:1,family_labels:1,repetitions_per_condition:1,study_design:null,
+  warnings:['<script>unsafe report text</script>'],conditions:[{...summary.groups[0],not_started:0,technical_failures:0,limit_failures:0}],
+  decision_audit:{scored_turns:1,skipped_turns:0,unique_public_inputs:1,contrasts:[{policies:['cost_aware','cost_blind'],different_actions:1,observations:1}],
+    observations:[{episode_id:'e00001',case:'D09',source_policy:'cost_blind',profile:{model:'mock'},step:1,admitted_status:null,
+      actions:{cost_aware:{action:'ask',recipient:'H3'},always_reverify:{action:'ask',recipient:'H3'},cost_blind:{action:'ask',recipient:'H2'},llm_proposal:{action:'ask',recipient:'H3'}},
+      immediate_query_cost:{cost_aware:1,always_reverify:1,cost_blind:5,llm_proposal:1}}],notes:[],skipped:[]},remaining_research_steps:['Independent review']};
+ const researchView=await boot('#experiment/mock-guard',false,undefined,{session,summary},false,async url=>url.endsWith('/research')?researchReport:undefined);
+ await researchView.doc.groups['[data-tab]'].find(x=>x.dataset.tab==='research').onclick();
+ await new Promise(resolve=>setImmediate(resolve));await new Promise(resolve=>setImmediate(resolve));
+ assert.ok(researchView.doc.getElementById('detail-content').textContent.includes('Τι αλλάζει αν όλοι δουν την ίδια πληροφορία;'));
+ assert.ok(!researchView.doc.getElementById('detail-content').innerHTML.includes('<script>unsafe'));
+ assert.ok(researchView.doc.getElementById('audit-table').textContent.includes('ask → H3'));
+
+ console.log('Frontend regression checks: 8 routes, guarded experiment table/dialogue, read-only globals, startup failure UI, no startup inference, simulation navigation, evidence binding/freshness, no future history, escaped public text, manual sandbox, structured policy variants, two-phase replay, timer disposal, sandbox-to-study transfer, frozen review invalidation, no implicit start and read-only research reports. PASS');
 }
 if(require.main===module)main().catch(error=>{console.error(error);process.exitCode=1;});
 module.exports={boot};

@@ -1,6 +1,6 @@
 # RSS2027 Research Workbench
 
-A local Python workbench for uncertainty-aware information seeking in simulated human–robot teams. Version 1.1 studies when to request confirmation and which human information source to ask.
+A local Python workbench for uncertainty-aware information seeking in simulated human–robot teams. Version 1.2 studies when to request confirmation and which human information source to ask.
 
 ## Run on Windows
 
@@ -40,7 +40,7 @@ Research development prototype with simulated human replies and equipment tasks.
 
 Local experiments under `workspace/`, generated audit outputs, caches, and credential files are excluded from Git. Synthetic regression fixtures are included for software checks.
 
-The original version 1.1 release documents describe the state at packaging time; later experimental runs do not change that release snapshot.
+Version 1.1 remains reproducible at its original commit. Version 1.2 has a new code fingerprint; start a new experiment rather than resuming an old run with changed code.
 
 The research target is RSS 2027; the repository name does not change the experiment protocol.
 
@@ -53,3 +53,11 @@ Inside a saved experiment, **Προσομοίωση ομάδας** provides Play
 The isometric room, figures, signals and delivery movement are symbolic. They do not model physical robot navigation or real team behaviour. See [interactive simulation notes](docs/SIMULATION_UI_GR.md).
 
 Offline validation: `node test_frontend_smoke.cjs` and `py -m unittest test_interactive_parity -v`. The parity test checks the browser training adapter against the Python simulator using synthetic policy rollouts and manual paths. Node is optional and used only for tests.
+
+## Research studies with LLMs (1.2)
+
+Open **Μελέτη με LLMs** to select common scenarios, policies, exact model profiles, repetitions and a bounded initial call cap. Preview the design, then create a frozen experiment. **Creation does not start provider calls**: use the separate Start/Resume action after reviewing the saved design. Source/cost variants can be copied from the training lab without mutating its original dataset or reusing manual actions.
+
+The **Έλεγχος μελέτης** tab reports coverage, outcomes, technical failures separately from deadline/step limits, and current-controller suggestions on identical recorded public inputs and admitted claims. This one-step diagnostic does not invent counterfactual episode outcomes. ZIP exports include the study design, decision audit and research report.
+
+See [research plan and scientific limits](docs/PAPER_RESEARCH_PLAN_GR.md) and [upgrade instructions](docs/UPGRADE_1_2_GR.md). Existing research remains a synthetic development study: independent scenarios, external review, sample-size justification, literature-backed contribution and new live multi-model data are still required. The current selector is a greedy heuristic, not an optimal value-of-information planner.

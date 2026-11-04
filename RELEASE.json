@@ -1,35 +1,41 @@
 {
   "files": {
-    "engine.py": "89debda4ee144097ffcf445c56e18c214c9ff44a38fd1cbbdbe21ff6a479b1bc",
+    "engine.py": "5bf8b48c4a57218a6d6ea32ce550814ecc6aa0529ed769077aaeabc2db6bfa67",
     "contracts.py": "5fb06d1612372490202b71344ee83cee8cc6df75b6badf3e7a864ffffeb0c814",
     "catalog.py": "064b88aab72f3f1a767d62c2456ddafc5134e4856afd546574f698cfd7bbba29",
     "providers.py": "5d94c5b4f71673f744a16753d89ffe9101fa329913f0ab85a9f65afb7c371a7f",
     "temporal_core.py": "c42937a881a3c1a6f693f370bc9b4f10b25d9d1bbc532f44250e1afc09c3ec77",
     "analysis.py": "33b3f794ba4b6c87052960ab55462a1ec1ce8fb903ecb5f4054e388ad51be14e",
-    "manager.py": "4ebab1898fcb6f7bbf0b9d57ab95cee12fb9e6e21a2e112ac837ef069357605e",
+    "manager.py": "b1ab218c347048bfbc106118f5a55576073a2f6f41522a724ef085f85edb5d96",
     "storage.py": "6bd9e815a2d2cea444ee92cd8c07f6ff22f8bf27f23770848522b0ebe185158a",
-    "app.py": "71c2a462b160d40e127aaabe9ed631a4666b031c484bd067c648d1937a72b877",
-    "evidence_guard.py": "c46d48dec2afe050e8987147c2b25523d049c7451889fb3801f5bac7d117ba95"
+    "app.py": "f3bdaec200cd30fb884e2be85ab0d2050e4bffdf0ab4cf0c42375dad3b97e37a",
+    "evidence_guard.py": "c46d48dec2afe050e8987147c2b25523d049c7451889fb3801f5bac7d117ba95",
+    "research.py": "5e646bc3b0e20ac5b532364bab5c09466c4b90dc301bfddfe84596f150e120fa"
   },
-  "sha256": "03d774bcc32c882eeb514f088d4ba5b48cf4017bfeb73dac9955f3fc9f974de9",
+  "sha256": "6f32a3eaa31c9228d01559b86437581d965f4ff00445fda75a6214e718eca71d",
   "prompt_sha256": "95a3b0374f76ecae2b1ffab900d1a71cd8afcc0884ee542f8b182c64c56ba31b",
-  "release": "RSS2027 Research Workbench 1.1",
-  "created_utc": "2026-10-31",
+  "release": "RSS2027 Research Workbench 1.2",
+  "created_utc": "2026-11-04",
+  "source_commit": "0803fd316ca4d3a989801541ae49a97cd9471be7",
   "dataset_sha256": "7296c482d8788987dbfc2bf918f319908f445be6ac90b870d8c2d504f8c2495b",
-  "dataset_file_sha256": "7f9e18aeb520a8b1a74ee52081d3e83dbaf619dbfd2032ae08c6b268e3f8052f",
-  "source_release": "1.0 + UI patch 1.0.1",
-  "evidence_guard": "explicit-support-v1",
+  "dataset_file_sha256": "845365e23cf34aaf105f2c8234d0973ae825c76fb3587b461787744096111415",
+  "ui_files": {
+    "web/index.html": "7ecf11f844ad9b0b33d5096a95b6a183438eb9c4dd6c22a01f85d9e73f21cec2",
+    "web/app.js": "dbe29718177e8d094e54bbad2f6e1371fd4284b3af1d22c6ea10e52df5ade949",
+    "web/research-ui.js": "d0a3efee2406b0c4c5c3ab858ed5cc9bdcbbdce57afdef0cccf29038008fc431",
+    "web/style.css": "d749a3b4de0f3e6c108139545a33b0b611849bd3eec6acfa4590129d0e575a2f"
+  },
   "checks": {
-    "unittest": 47,
-    "fixture_case_policy_modes": 280,
-    "recorded_turns": 12,
-    "raw_error_turns": 4,
-    "admitted_error_turns": 0,
-    "rejected_claims": 4,
-    "changed_actions_on_saved_inputs": 1,
-    "new_paid_api_calls_performed": 0,
+    "unittest": 69,
+    "frontend_routes": 8,
+    "interactive_parity_traces": 84,
+    "interactive_parity_transitions": 136,
+    "saved_input_audit_turns": 13,
+    "new_paid_provider_calls": 0,
     "python": "3.12.14",
-    "windows": "Mock locking regression only; Windows launchers not executed",
-    "browser": "Node VM startup and guarded experiment overview/dialogue; no full browser visual QA"
-  }
+    "provider_testing": "Existing provider adapters plus mocked study execution; no new live model evaluation.",
+    "browser": "Node VM/DOM regression and real local HTTP integration. Full browser UI could not be reached from the cloud browser; Chromium was not installed in the executor.",
+    "windows": "Launcher not executed; existing key/lock behaviour covered by tests or mocks."
+  },
+  "scope": "Research study workflow and one-step read-only diagnostics. Development software checks are not independent benchmark or clinical evidence."
 }

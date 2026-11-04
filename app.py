@@ -16,6 +16,7 @@ import contracts
 import engine
 from manager import Manager
 import providers
+import research
 from storage import Store,WorkspaceLock
 
 ROOT=Path(__file__).resolve().parent
@@ -33,6 +34,10 @@ def export(session,kind):
         return analysis.html_report(session).encode(),'text/html; charset=utf-8','report.html'
     if kind=='latex':
         return analysis.latex_export(session).encode(),'text/plain; charset=utf-8','results.tex'
+    if kind=='research':
+        return research.markdown_report(session).encode(),'text/markdown; charset=utf-8','research_report.md'
+    if kind=='decision_audit':
+        return research.audit_csv(session).encode(),'text/csv; charset=utf-8','decision_audit.csv'
     if kind!='zip':
         raise ValueError('Unknown export format')
     out=io.BytesIO()
@@ -42,6 +47,10 @@ def export(session,kind):
             z.writestr(name,content)
         z.writestr('summary.json',json.dumps(analysis.summarize(session),ensure_ascii=False,indent=2))
         z.writestr('frozen_dataset.json',json.dumps(session['dataset'],ensure_ascii=False,indent=2))
+        z.writestr('study_design.json',json.dumps(session.get('study_design'),ensure_ascii=False,indent=2))
+        z.writestr('decision_audit.json',json.dumps(research.decision_audit(session),ensure_ascii=False,indent=2))
+        z.writestr('decision_audit.csv',research.audit_csv(session))
+        z.writestr('research_report.md',research.markdown_report(session))
         for name,path in DOCS.items():
             z.writestr('docs/'+name,session.get('protocol_documents',{}).get(name,path.read_text(encoding='utf-8')))
     return out.getvalue(),'application/zip','RSS2027_'+session['id'][:8]+'.zip'
@@ -52,7 +61,7 @@ def make_server(workspace,port=8765,call=providers.infer):
     manager=Manager(store,call)
     token=secrets.token_hex(32)
     class Handler(BaseHTTPRequestHandler):
-        server_version='RSS2027/1.1'
+        server_version='RSS2027/1.2'
         def log_message(self,*args):
             pass
 
@@ -95,14 +104,15 @@ def make_server(workspace,port=8765,call=providers.infer):
                 if path=='/':
                     body=(ROOT/'web/index.html').read_text(encoding='utf-8').replace('__CSRF__',token).encode()
                     return self.send(body,mime='text/html; charset=utf-8')
-                if path in ('/web/app.js','/web/style.css'):
+                if path in ('/web/app.js','/web/style.css','/web/research-ui.js'):
                     return self.send((ROOT/path[1:]).read_bytes(),mime='application/javascript' if path.endswith('.js') else 'text/css')
                 if path=='/favicon.ico':
                     return self.send(b'',204,'image/x-icon')
                 if path=='/api/state':
                     data=store.dataset()
-                    return self.send({'version':'1.1','keys':providers.key_status(),'experiments':store.listing(),
+                    return self.send({'version':'1.2','keys':providers.key_status(),'experiments':store.listing(),
                         'case_count':len(data['cases']),'dataset_name':data['name'],'policies':engine.POLICIES,
+                        'dataset_sha256':contracts.digest(data),'study':research.metadata(),
                         'active':manager.active,'workspace':str(store.root),'documents':list(DOCS)})
                 if path=='/api/dataset':
                     return self.send(store.dataset())
@@ -119,6 +129,8 @@ def make_server(workspace,port=8765,call=providers.infer):
                     if len(parts)==4 and parts[3]=='export':
                         body,mime,name=export(s,parse_qs(parsed.query).get('format',['zip'])[0])
                         return self.send(body,mime=mime,filename=name)
+                    if len(parts)==4 and parts[3]=='research':
+                        return self.send(research.report(s))
                 return self.send({'error':'Not found'},404)
             except (ValueError,KeyError,TypeError,OSError) as error:
                 return self.send({'error':str(error) if isinstance(error,ValueError) else 'Invalid or unavailable local resource'},400)
@@ -131,7 +143,19 @@ def make_server(workspace,port=8765,call=providers.infer):
                 if not 0<length<=8*1024*1024 or self.headers.get('Content-Type','').split(';')[0]!='application/json':
                     raise ValueError('Expected JSON body, maximum 8 MiB')
                 body=json.loads(self.rfile.read(length))
+                if not isinstance(body,dict):
+                    raise ValueError('Expected a JSON object')
                 path=urlsplit(self.path).path
+                if path in ('/api/study/plan','/api/study/create'):
+                    sid=body.get('source_experiment_id')
+                    data=store.get(sid)['dataset'] if sid else store.dataset()
+                    prepared=research.prepare(body,data,sid)
+                    if path=='/api/study/plan':
+                        return self.send({k:v for k,v in prepared.items() if k!='dataset'})
+                    if not body.get('expected_plan_sha256'):
+                        raise ValueError('Preview and review the study plan before creating an experiment')
+                    return self.send(manager.create(prepared['config'],prepared['name'],
+                                     dataset=prepared['dataset'],study_design=prepared['study_design']))
                 if path=='/api/plan':
                     p=engine.plan(body['config'],store.dataset())
                     del p['dataset']
