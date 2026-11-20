@@ -1,5 +1,7 @@
 # RSS2027 Research Workbench
 
+**For prospective MSc reviewers:** [Concise English research overview](docs/PORTFOLIO_OVERVIEW.md), including implemented scope and scientific limitations.
+
 A local Python workbench for uncertainty-aware information seeking in simulated human–robot teams. Version 1.2 studies when to request confirmation and which human information source to ask.
 
 ## Run on Windows
